@@ -1,4 +1,4 @@
-# poyabzal-shop
+# poyabzal_shop
 
 ## Project setup
 ```
