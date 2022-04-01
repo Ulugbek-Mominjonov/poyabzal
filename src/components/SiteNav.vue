@@ -28,13 +28,13 @@
         >
           <div class="d-flex justify-space-around social-media">
             <router-link to="#" class="link">
-              <v-icon>mdi-facebook</v-icon>
+              <v-icon color="#28235B">mdi-facebook</v-icon>
             </router-link>
             <router-link to="#" class="link">
-              <v-icon>mdi-instagram</v-icon>
+              <v-icon color="#28235B">mdi-instagram</v-icon>
             </router-link>
             <router-link to="#" class="link">
-              <v-icon>mdi-whatsapp</v-icon>
+              <v-icon color="#28235B">mdi-whatsapp</v-icon>
             </router-link>
           </div>
         </v-col>
@@ -46,11 +46,11 @@
           class="text-left email-date"
         >
           <p class="text-right">
-            <v-icon color="red">mdi-clock</v-icon>
+            <v-icon color="#28235B">mdi-clock</v-icon>
             <span>Пн-Пт, 9:00 до 18:00</span>
           </p>
           <p class="text-right">
-            <v-icon color="red">mdi-email</v-icon>
+            <v-icon color="#28235B">mdi-email</v-icon>
             <span>zakaz@mir-kovrolina.ru</span>
           </p>
         </v-col>
@@ -134,7 +134,7 @@
         <v-col class="header-botoom-col" cols="11">
           <ul class="d-flex px-3 justify-space-between align-center nav_list">
             <li class="nav-link">
-              <router-link class="link d-flex align-center" to="/about">
+              <router-link class="link d-flex align-center" to="/katalog">
                 <v-icon class="mr-1 cat-icon" centered>mdi-menu</v-icon>
                 Katalog
               </router-link>
@@ -209,7 +209,7 @@
             <v-list-item-title>
               <router-link
                 class="link drawer-link d-flex align-center"
-                to="about"
+                to="/katalog"
               >
                 <v-icon class="mr-1" centered>mdi-menu</v-icon>
                 Katalog
@@ -327,7 +327,7 @@ export default {
     flex-grow: 1;
     margin-right: 8px;
     outline: none;
-    border-right: 1px solid #a4a4a4;
+    border-right: 1px solid #28235B;
   }
 
   .search-icon {

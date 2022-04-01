@@ -1,7 +1,7 @@
 <template>
   <footer>
     <v-container>
-      <v-row justify="center" justify-sm="start">
+      <v-row justify="center" justify-sm="start" align="stretch">
         <v-col
           cols="12"
           sm="6"
@@ -37,82 +37,9 @@
             </li>
           </ul>
         </v-col>
-        <v-col
-          cols="12"
-          sm="6"
-          md="4"
-          lg="2"
-          class="text-center text-sm-left footer-news"
-        >
-          <h4 class="footer-title">Yangiliklar</h4>
-          <ul class="list-unstyle footer-list">
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#">Blog</router-link>
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
-                >Yangiliklar
-              </router-link>
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
-                >Aksiya va sotuvlar</router-link
-              >
-            </li>
-          </ul>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-          class="text-center text-sm-left footer-product"
-        >
-          <h4 class="footer-title">Ishlab chiqaruvchi</h4>
-          <ul class="list-unstyle footer-list">
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
-                >Kompaniya haqida</router-link
-              >
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
-                >Sertifikatlar
-              </router-link>
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
-                >Ishlab chiqaruvchilar</router-link
-              >
-            </li>
-          </ul>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="6"
-          md="4"
-          lg="2"
-          class="text-center text-sm-left footer-faq"
-        >
-          <h4 class="footer-title">Faq va xizmatlar</h4>
-          <ul class="list-unstyle footer-list">
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
-                >Eng ko'p beriladigan savollar</router-link
-              >
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#">To'lov </router-link>
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
-                >Yetkazib berish</router-link
-              >
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#">Kafolat</router-link>
-            </li>
-          </ul>
+
+        <v-col class="position" cols="7">
+          <div style="width: 100%; height: 100%"><iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=100%25&amp;hl=en&amp;q=Uzbekistan,%20Tashkent+(Bordo)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.gps.ie/marine-gps/">shipping gps</a></iframe></div>
         </v-col>
         <v-col
           cols="12"
