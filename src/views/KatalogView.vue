@@ -6,7 +6,7 @@
         <v-col class="katalog-link" cols="2">
           <v-list dense>
             <v-list-item-group v-model="selectedItem" color="red">
-              <v-list-item @click="changeMenu('Barcha bolimlar')">
+              <v-list-item @click="changeMenu('barchasi', 0)">
                 <v-list-item-content>
                   <v-list-item-title class="text-subtitle-2"
                     >Barcha bo'limlar
@@ -20,15 +20,15 @@
               <v-divider></v-divider>
 
               <v-list-item
-                v-for="(item, i) in items"
+                v-for="(item, i) in category"
                 :key="i"
-                @click="changeMenu(item.text)"
+                @click="changeMenu(item.name, item.id)"
               >
                 <v-list-item-content>
-                  <v-list-item-title v-text="item.text"></v-list-item-title>
+                  <v-list-item-title v-text="item.name"></v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-icon>
-                  <v-icon v-text="item.icon"></v-icon>
+                  <v-icon>mdi-chevron-right</v-icon>
                 </v-list-item-icon>
               </v-list-item>
             </v-list-item-group>
@@ -49,34 +49,48 @@
                 <span>{{ pathName }}</span>
                 <v-icon size="18" color="red">mdi-chevron-right</v-icon>
               </div>
+
+              <v-select
+                v-model="select"
+                :items="items3"
+                label="Saralash"
+                dense
+                solo
+                background-color="#28235b"
+                dark
+                height="30"
+                class="filter"
+                hide-details
+                @change="sort"
+              ></v-select>
             </v-col>
 
             <!-- shoes  -->
             <v-col
               class="shoes"
               cols="3"
-              v-for="(item, index) in shoes"
+              v-for="(item, index) in getShoes"
               :key="index"
             >
               <div class="shoes-card">
                 <img
                   class="shoes-img"
-                  src="../assets/shoes2.png"
-                  alt="shoes img"
+                  :src="item.images[0]"
+                  alt="Mahsulot rasmi yo'q"
                 />
-                <h3 class="shoes-cat">{{ item.category }}</h3>
-                <p class="shoes-info">{{ item.info }}</p>
+                <span class="aksiya" v-if="item.price.onSale">Aksiya</span>
+                <p class="my-5 shoes-info">{{ item.name }}</p>
                 <div
                   class="d-flex align-center justify-space-between stars-wrapper"
                 >
                   <star-rating
-                    :rating="rating"
+                    :rating="item.rating.avarage"
                     :star-style="style"
                     :is-indicator-active="indicator"
                   ></star-rating>
 
                   <div>
-                    <small>5 ta sharx</small>
+                    <small>{{ item.rating.count }} ta sharx</small>
                     <v-icon color="#28235B" class="icon" size="18"
                       >mdi-android-messages</v-icon
                     >
@@ -85,35 +99,65 @@
                 <div
                   class="d-flex align-center justify-space-between cost-basket"
                 >
-                  <span>{{ item.cost }}</span>
-                  <v-icon color="#28235B" size="28" class="basket"
+                  <span :class="{ sale: item.price.onSale }"
+                    >{{ item.price.price }} UZS</span
+                  >
+                  <span class="d-block" v-if="item.price.onSale"
+                    >{{ item.price.salePrice }} UZS</span
+                  >
+                  <v-icon
+                    color="#28235B"
+                    size="28"
+                    class="basket"
+                    :class="{ 'basket-dashed': item.id == icon }"
+                    @click="addPro(item.id, item.name)"
                     >mdi-basket-outline</v-icon
                   >
                 </div>
 
-                <v-btn color="#28235B" outlined height="30" class="order" @click="enterDetail"
+                <v-btn
+                  color="#28235B"
+                  outlined
+                  height="30"
+                  class="order"
+                  @click="enterDetail(item.id)"
                   >Buyurtma berish</v-btn
                 >
               </div>
             </v-col>
-            <v-col cols="12" class="ml-auto">
+            <v-col cols="12" class="ml-auto" v-if="pageCount > 1">
               <v-pagination
                 v-model="page"
                 class="my-4"
-                :length="100"
+                :length="pageCount"
                 circle
                 :total-visible="5"
+                @input="changePage"
               ></v-pagination>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
+      <v-dialog v-model="iconDialog" hide-overlay persistent  width="300">
+        <v-card color="primary" dark class="pt-3">
+          <v-card-text>
+            {{name}} korzinkaga qo'shildi
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-container>
   </div>
 </template>
 
 <script>
 import StarRating from "vue-dynamic-star-rating";
+import store from "@/store";
+import { mapState } from "vuex";
 export default {
   components: {
     StarRating,
@@ -129,81 +173,130 @@ export default {
         starHeight: 15,
       },
       indicator: false,
-      items: [
-        { text: "Ofis uchun", icon: "mdi-chevron-right" },
-        { text: "Uy uchun", icon: "mdi-chevron-right" },
-        { text: "O'quv uchun", icon: "mdi-chevron-right" },
-        { text: "Mehmonhona uchun", icon: "mdi-chevron-right" },
+      items3: [
+        "Narx bo'yicha",
+        "Yangilar",
+        "Eskilar",
+        "Ko'p ko'rilganlar(-)",
+        "Ko'p ko'rilganlar(+)",
       ],
       pathName: "Barcha bo'limlar",
-      shoes: [
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-        {
-          img: "../assets/shoes2.png",
-          category: "Krasovka",
-          info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat risus at tortor proin. Ut sollicitudin ut.",
-          star: 3,
-          cost: "UZS 250 000",
-        },
-      ],
-      page: 1
+      page: 1,
+      isNew: 0,
+      catId: null,
+      select: "jhjgh",
+      icon: null,
+      iconDialog: false,
+      name: ""
     };
   },
-  methods: {
-    changeMenu(value) {
-      this.pathName = value;
+  computed: {
+    ...mapState("shoes", {
+      category: "category",
+      productList: "pList",
+      categoryId: "catId",
+      onSale: "sale",
+    }),
+    getShoes() {
+      if (this.productList) {
+        if (this.onSale == 1) {
+          return this.productList.results.filter((item) => item.price.onSale);
+        }
+        return this.productList.results;
+      }
+      return [];
     },
-    enterDetail() {
-      this.$router.push('/shoes')
+    pageCount() {
+      if (this.productList) {
+        return this.productList.numPages;
+      }
+      return null;
+    },
+  },
+  methods: {
+    changeMenu(name, id) {
+      console.log(id);
+      this.pathName = name;
+      let tip = this.$route.params.name;
+      let data = {
+        productType: tip,
+        category: id,
+      };
+      store.dispatch("shoes/proCat", data);
+    },
+    enterDetail(id) {
+      this.$router.push({
+        name: "OrderView",
+        params: { id: id },
+      });
+    },
+    changePage(value) {
+      let tip = this.$route.params.name;
+      let cat = this.selectedItem;
+      let page = value;
+      console.log(value);
+      let data = {
+        category: cat,
+        productType: tip,
+        page: page,
+      };
+      store.dispatch("shoes/pagination", data);
+    },
+    sort(value) {
+      let order;
+      switch (value) {
+        case "Narx bo'yicha":
+          order = "price";
+          break;
+        case "Yangilar":
+          order = "is_new";
+          break;
+        case "Eskilar":
+          order = "-is_new";
+          break;
+        case "Ko'p ko'rilganlar(-)":
+          order = "views";
+          break;
+        case "Ko'p ko'rilganlar(+)":
+          order = "-views";
+          break;
+      }
+      let tip = this.$route.params.name;
+      let cat = this.selectedItem;
+      let data = {
+        category: cat,
+        productType: tip,
+        order: order,
+      };
+      store.dispatch("shoes/proSort", data);
+    },
+    addPro(id, name) {
+      this.name = name
+      let data = {
+        product: id,
+        quantity: 1,
+      };
+      store.dispatch("korzinka/addKorzinka", data).then(() => {
+        this.icon = id;
+        this.iconDialog = true;
+      });
+    },
+  },
+  mounted() {
+    store.dispatch("shoes/getCategory");
+    let tip = this.$route.params.name;
+    if (tip != "barchasi") {
+      store.dispatch("shoes/proTip", tip);
+    } else {
+      store.dispatch("shoes/productList");
     }
+  },
+  watch: {
+    iconDialog(val) {
+      if (!val) return;
+
+      setTimeout(() => (this.iconDialog = false), 1000);
+    },
   },
 };
 </script>
@@ -221,6 +314,14 @@ export default {
 .content-path {
   display: flex;
   align-items: flex-end;
+  position: relative;
+
+  .filter {
+    position: absolute;
+    top: 15px;
+    right: 0;
+    width: 150px;
+  }
 }
 .content-name::after {
   display: block;
@@ -247,6 +348,7 @@ export default {
   }
 }
 .content-current-path {
+  position: relative;
   color: #cc0000;
   span {
     font-weight: 400;
@@ -262,12 +364,25 @@ export default {
   padding: 6px !important;
 }
 .shoes-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 10px;
   border: 1px solid #28235b;
   border-radius: 10px;
   color: #28235b;
+  .aksiya {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 4px 10px;
+    color: #000000;
+    background: #efd80a;
+    border-radius: 5px;
+  }
   .shoes-img {
     display: block;
     width: 100%;
@@ -320,6 +435,13 @@ export default {
     text-transform: capitalize !important;
     font-size: 13px;
     line-height: 16px;
+  }
+  .sale {
+    text-decoration: line-through;
+    color: red;
+  }
+  .basket-dashed {
+    color: red !important;
   }
 }
 </style>

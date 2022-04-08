@@ -1,32 +1,47 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import OrderView from '../views/OrderView.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import HomeView from "../views/HomeView.vue";
+import OrderView from "../views/OrderView.vue";
+import KorzinkaView from "../views/KorzinkaView.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: "/",
+    name: "home",
+    component: HomeView,
   },
   {
-    path: '/katalog',
-    name: 'about',
-    component: () => import('../views/KatalogView.vue')
+    path: "/katalog/:name",
+    name: "product",
+    props: true,
+    component: () => import("../views/KatalogView.vue"),
   },
   {
-    path: '/shoes',
-    name: 'OrderView',
-    component: OrderView
+    path: "/shoes/:id",
+    name: "OrderView",
+    props: true,
+    component: OrderView,
   },
-]
+  {
+    path: "/Korzinka",
+    name: "KorzinkaView",
+    props: true,
+    component: KorzinkaView,
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  if (!localStorage.getItem("access_token")){
+    next({ name: "home" });
+  }
+  else next()
+});
+export default router;

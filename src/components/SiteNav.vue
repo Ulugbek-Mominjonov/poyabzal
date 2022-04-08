@@ -61,70 +61,178 @@
           order="4"
           class="registration text-lg-right text-center d-none d-md-block"
         >
-          <button class="register-btn" @click="dialog = true">
+          <button class="register-btn" @click="dialog = true" v-if="!isUser">
             <span>Ro'yhatdan o'tish</span>
           </button>
+          <v-menu offset-y v-if="isUser">
+            <template v-slot:activator="{ on: menu, attrs }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on: tooltip }">
+                  <v-btn
+                    color="#28235b"
+                    dark
+                    v-bind="attrs"
+                    v-on="{ ...tooltip, ...menu }"
+                  >
+                    <v-icon>mdi-account</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ userData.firstName}} {{userData.lastName}}</span>
+              </v-tooltip>
+            </template>
+            <v-list>
+              <v-list-item v-for="(item, index) in items" :key="index">
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-col>
       </v-row>
     </v-container>
-
     <!-- regiter modal  -->
     <v-row justify="center">
       <v-dialog
         v-model="dialog"
         scrollable
-        persistent
         max-width="500px"
         transition="dialog-transition"
       >
-        <v-card>
-          <v-card-title class="justify-center">
-            Registratsiyadan O'tish
-          </v-card-title>
+        <v-card class="px-5 form-card">
+          <v-card-title class="justify-center"> Kirish </v-card-title>
           <v-card-text>
-            <v-text-field
-              label="Email"
-              prepend-icon="mdi-email"
-              v-model="email"
-              :rules="[() => !!email || 'This field is required']"
-              :error-messages="errorMessages"
-              required
-            ></v-text-field>
-            <v-text-field
-              label="Password"
-              :type="showPassword ? 'text' : 'password'"
-              prepend-icon="mdi-lock"
-              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="[rules.required, rules.min]"
-              hint="At least 8 characters"
-              @click:append="showPassword = !showPassword"
-              v-model="parol"
-            ></v-text-field>
-
-            <v-text-field
-              label="Check Password"
-              :type="showPassword2 ? 'text' : 'password'"
-              prepend-icon="mdi-lock"
-              :append-icon="showPassword2 ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="[rules.required, rules.min, rules.emailMatch]"
-              hint="At least 8 characters"
-              @click:append="showPassword2 = !showPassword2"
-              v-model="checkParol"
-            ></v-text-field>
+            <v-container>
+              <v-row align="center">
+                <v-col cols="12" class="pb-0">
+                  <label for="phone" class="d-block">Telefon</label>
+                </v-col>
+                <v-col cols="11">
+                  <input v-imask="mask" @complete="onComplete" id="phone" />
+                </v-col>
+                <v-col cols="1" class="pl-0">
+                  <v-icon size="100" color="#28235B" x-large @click="getSmsCode"
+                    >mdi-message-arrow-right</v-icon
+                  >
+                </v-col>
+                <v-col cols="12" class="pb-0" v-if="code">
+                  <label for="phone" class="d-block">Sms code</label>
+                </v-col>
+                <v-col cols="11" v-if="code">
+                  <input v-imask="maskTwo" @complete="onCompleteTwo" />
+                </v-col>
+                <v-col cols="12 text-center" v-if="code">
+                  <v-btn color="#28235B" dark @click="getToken">Kirish</v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="dialog = false">
-              Disagree
-            </v-btn>
-            <v-btn color="green darken-1" text @click="dialog = false">
-              Agree
-            </v-btn>
-          </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
+
+    <!-- kabinet  -->
+    <v-dialog
+      v-model="dialogTwo"
+      scrollable
+      persistent
+      max-width="500px"
+      transition="dialog-transition"
+    >
+      <v-card class="form-card">
+        <v-card-title class="justify-center">
+          Shaxsiy kabinet yaratish
+        </v-card-title>
+        <v-card-text class="pt-4">
+          <v-container>
+            <v-row align="center">
+              <v-col cols="12" class="py-0">
+                <v-text-field
+                  v-model="kabinet.name"
+                  label="Ismingiz"
+                  id="id"
+                  placeholder="Ismingizni kiriting..."
+                  color="#28235B"
+                  dense
+                  outlined
+                  append-icon="mdi-account-arrow-down"
+                ></v-text-field>
+                <v-text-field
+                  v-model="kabinet.lastName"
+                  label="Familiyangiz"
+                  id="id"
+                  placeholder="Familiyangizni kiriting..."
+                  color="#28235B"
+                  dense
+                  outlined
+                  append-icon="mdi-account"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" class="py-0">
+                <v-text-field
+                  v-model="kabinet.address"
+                  label="Yashash manzil"
+                  id="id"
+                  placeholder="Yashash manzilingizni kiriting..."
+                  color="#28235B"
+                  dense
+                  outlined
+                  append-icon="mdi-folder-home"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" class="py-0">
+                <v-text-field
+                  v-model="kabinet.job"
+                  label="Faoliyat joyi"
+                  id="id"
+                  placeholder="Faoliyat joyingizni kiriting..."
+                  color="#28235B"
+                  dense
+                  outlined
+                  append-icon="mdi-home-city"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" class="py-0">
+                <v-file-input
+                  v-model="image"
+                  :rules="rules"
+                  accept="image/png, image/jpeg, image/bmp"
+                  placeholder="Rasmingizni yuklang"
+                  append-icon="mdi-camera"
+                  prepend-icon=""
+                  show-size
+                  label="Rasmingizni yuklang"
+                  outlined
+                  dense
+                ></v-file-input>
+              </v-col>
+              <v-col cols="12" class="pt-0">
+                <v-btn color="#28235B" dark @click="getLocation"
+                  ><v-icon>mdi-map-marker</v-icon>Geo Joylashuv</v-btn
+                >
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="#28235B" dark @click="setKabinet"
+            >Kabinet yaratish</v-btn
+          >
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- message dialog  -->
+    <v-dialog
+      v-model="dialogThree"
+      scrollable
+      max-width="500px"
+      transition="dialog-transition"
+    >
+      <v-alert type="success">
+        {{ message }}
+      </v-alert>
+    </v-dialog>
 
     <!-- header botttom  -->
     <v-divider class="mt-5 mb-3"></v-divider>
@@ -134,28 +242,28 @@
         <v-col class="header-botoom-col" cols="11">
           <ul class="d-flex px-3 justify-space-between align-center nav_list">
             <li class="nav-link">
-              <router-link class="link d-flex align-center" to="/katalog">
+              <div class="d-flex align-center" @click="changeTip('barchasi')" :class="{'active': tip=='barchasi'}">
                 <v-icon class="mr-1 cat-icon" centered>mdi-menu</v-icon>
-                Katalog
-              </router-link>
+                Barchasi
+              </div>
             </li>
             <li class="nav-link">
-              <router-link class="link" to="#">Xizmatlar</router-link>
+              <div @click="changeTip('new')" :class="{'active': tip=='new'}">Yangilar</div>
             </li>
             <li class="nav-link">
-              <router-link class="link" to="#">Galereya</router-link>
+              <div @click="changeTip('men')" :class="{'active': tip=='men'}">Erkaklar</div>
             </li>
             <li class="nav-link">
-              <router-link class="link" to="#">Aksiya</router-link>
+              <div @click="changeTip('women')" :class="{'active': tip=='women'}">Ayollar</div>
             </li>
             <li class="nav-link">
-              <router-link class="link" to="#">Kompaniya haqida</router-link>
+              <div @click="changeTip('kid')" :class="{'active': tip=='kid'}">Bolalar</div>
             </li>
             <li class="nav-link">
-              <router-link class="link" to="#">Kontakt</router-link>
+              <div @click="changeTip('sale')" :class="{'active': tip=='sale'}">Aksiya</div>
             </li>
             <li class="nav-link">
-              <router-link class="link d-flex align-center" to="#">
+              <router-link class="link d-flex align-center" to="/Korzinka">
                 <v-icon class="mr-1">mdi-basket-plus</v-icon>
                 Korzinka
               </router-link>
@@ -279,34 +387,172 @@
 </template>
 
 <script>
+import store from "@/store/index";
+import { mapState } from "vuex";
+import { IMaskDirective } from "vue-imask";
 export default {
   name: "SiteNav",
 
   data: () => ({
     search: "",
     dialog: false,
-    email: "",
-    parol: "",
-    checkParol: "",
-    errorMessages: "",
-    showPassword: false,
-    showPassword2: false,
     language: "Uz",
     languages: ["Uz", "Eng", "Ru"],
     drawer: false,
     group: null,
+    sms: "",
+    mask: {
+      mask: "+{998}({00}) {000}-{00}-{00}",
+      lazy: false,
+    },
+    maskTwo: {
+      mask: "00000",
+      lazy: false,
+    },
+    nomer: null,
+    code: false,
+    dialogTwo: false,
+    kabinet: {
+      name: "",
+      lastName: "",
+      address: "",
+      job: "",
+      latitude: "",
+      longitude: "",
+    },
+    image: null,
+    rules: [
+      (v) =>
+        !v || v.size < 2000000 || "Rasm hajmi 2MB dan kamroq bo'lishi kerak!",
+    ],
+    dialogThree: false,
+    message: "",
+    items: [{ title: "Profil" }, { title: "Korzinka" }],
+    tip: null
   }),
   computed: {
-    rules() {
-      let parol = this.parol;
-      return {
-        required: (value) => !!value || "Required.",
-        min: (v) => v.length >= 8 || "Min 8 characters",
-        emailMatch: (value) =>
-          value == parol || `the password you entered don't match`,
-      };
+    ...mapState("auth", {
+      isHave: "isHave",
+    }),
+    ...mapState("user", {
+      userData: "user"
+    }),
+    ...mapState('shoes', {
+      categoryId: 'catId'
+    }),
+    isUser() {
+      if (localStorage.getItem("access_token")) {
+        return true;
+      }
+      return false;
     },
   },
+  methods: {
+    foo(event) {
+      console.log(event);
+    },
+    onComplete(e) {
+      const maskRef = e.detail;
+      console.log("complete", maskRef.unmaskedValue);
+      this.nomer = maskRef.unmaskedValue;
+    },
+    onCompleteTwo(e) {
+      const maskRef = e.detail;
+      console.log("complete", maskRef.unmaskedValue);
+      this.sms = maskRef.unmaskedValue;
+    },
+    getSmsCode() {
+      let phone = this.nomer;
+      let data = {
+        username: phone,
+      };
+      store.dispatch("auth/getSms", data).then(() => {
+        this.code = true;
+        this.phone = null;
+      });
+    },
+    getToken() {
+      let nomer = this.nomer;
+      let smsCode = this.sms;
+      let data = {
+        username: nomer,
+        password: smsCode,
+      };
+      store.dispatch("auth/login", data).then(() => {
+        if (this.isHave) {
+          this.dialog = false;
+          this.code = false;
+          this.dialogTwo = true;
+        } else {
+          this.dialog = false;
+          location.reload();
+        }
+      });
+    },
+    getLocation() {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log(position.coords.latitude);
+          console.log(position.coords.longitude);
+          this.kabinet.latitude = position.coords.latitude;
+          this.kabinet.longitude = position.coords.longitude;
+          console.log(position.coords.altitudeAccuracy);
+          this.message = "Joylashuvingiz aniqlandi!";
+          this.dialogThree = true;
+        },
+        (error) => {
+          console.log(error.message);
+        }
+      );
+    },
+    setKabinet() {
+      let data = new FormData();
+      let myData = this.kabinet;
+      let image = this.image;
+      data.append("first_name", myData.name);
+      data.append("last_name", myData.lastName);
+      data.append("image", image);
+      data.append("latitude", myData.latitude);
+      data.append("longitude", myData.longitude);
+      data.append("live_address", myData.address);
+      data.append("work_address", myData.job);
+      console.log(data);
+      store.dispatch("auth/setKabinet", data).then(() => {
+        this.message = "Ma'lumotlar qabul qilindi. Rahmat";
+        this.dialogThree = true;
+        this.dialogTwo = false;
+        location.reload();
+      });
+    },
+     changeTip(value) {
+      this.tip = value
+      localStorage.setItem('tip', value)
+      console.log(2);
+      if(value=='barchasi') {
+        store.commit("shoes/IS_SALE",0)
+         store.dispatch("shoes/productList")
+          .then(() => {
+            this.$router.push({name: "product", params: {name: value}})
+          })
+      }
+      else {
+        store.commit("shoes/IS_SALE",0)
+        store.dispatch('shoes/proTip', value)
+          .then(() => {
+            this.$router.push({name: "product", params: {name: value}})
+          })
+      }
+    }
+  },
+  directives: {
+    imask: IMaskDirective,
+  },
+  mounted() {
+    if(localStorage.getItem("access_token")) {
+      store.dispatch('user/UserData')
+    }
+    this.tip = localStorage.getItem('tip')
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -327,7 +573,7 @@ export default {
     flex-grow: 1;
     margin-right: 8px;
     outline: none;
-    border-right: 1px solid #28235B;
+    border-right: 1px solid #28235b;
   }
 
   .search-icon {
@@ -402,7 +648,8 @@ export default {
   list-style-type: none;
 }
 .nav-link {
-  .router-link-exact-active {
+  cursor: pointer;
+  .active {
     color: rgba(255, 0, 0, 0.7) !important;
 
     .cat-icon {
@@ -437,7 +684,22 @@ export default {
     }
   }
 }
-
+.form-card {
+  label {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    color: rgba(40, 35, 91, 0.5);
+  }
+  input {
+    width: 100%;
+    padding: 10px 20px;
+    border: 1px solid #28235b;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #28235b;
+  }
+}
 /* -------------------------------------------------------------------------- */
 /*                              RESPONSIVE DESING                             */
 /* -------------------------------------------------------------------------- */

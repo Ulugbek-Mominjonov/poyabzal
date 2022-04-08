@@ -1,18 +1,19 @@
 <template>
   <v-container class="order-container">
     <div class="order-wrapper">
-      <h2 class="text-center mb-8 shoes-name">{{ data.name }}</h2>
+      <h2 class="text-center mb-8 shoes-name">{{ getDetail.name }}</h2>
       <v-row align="center">
         <v-col cols="1">
           <v-item-group v-model="onboarding" class="shrink" mandatory>
-            <v-item v-for="n in length" :key="n" v-slot="{ toggle }">
+            <v-item v-for="(item, index) in getDetail.images" :key="index" v-slot="{ toggle }">
               <div>
                 <div @click="toggle" class="mb-5">
                   <v-img
                     lazy-src="https://picsum.photos/id/11/10/6"
                     max-height="150"
                     max-width="250"
-                    src="https://picsum.photos/id/11/500/300"
+                    :src="item"
+                    alt="Mahsulot rasmi yo'q"
                   ></v-img>
                 </div>
               </div>
@@ -21,11 +22,14 @@
         </v-col>
         <v-col cols="5">
           <v-window v-model="onboarding" class="elevation-1" vertical>
-            <v-window-item v-for="n in length" :key="n">
-              <img
+            <v-window-item v-for="(item, index) in getDetail.images" :key="index">
+              <v-img
+                :src="item"
                 lazy-src="https://picsum.photos/id/11/10/6"
-                src="https://picsum.photos/id/11/500/300"
-              />
+                max-height="300"
+                max-width="100%"
+                alt="Mahsulot rasmi yo'q"
+              ></v-img>
             </v-window-item>
           </v-window>
         </v-col>
@@ -34,13 +38,13 @@
             class="d-flex align-center justify-space-between mb-7 stars-wrapper"
           >
             <star-rating
-              :rating="data.rating.avarage"
+              :rating="getDetail.rating.avarage"
               :star-style="style"
               :is-indicator-active="false"
             ></star-rating>
 
             <div>
-              <small>5 ta sharx</small>
+              <small>{{getDetail.rating.count}} ta sharx</small>
               <v-icon color="#28235B" class="icon" size="20"
                 >mdi-android-messages</v-icon
               >
@@ -48,24 +52,24 @@
           </div>
           <p class="d-flex justify-space-between">
             <small>1 dona</small>
-            <small class="cost" :class="{ sale: data.price.onSale }"
-              >UZS {{ data.price.price }}</small
+            <small class="cost" :class="{ sale: getDetail.price.onSale }"
+              >UZS {{ getDetail.price.price }}</small
             >
-            <small class="cost" v-if="data.price.onSale">
-              UZS {{ data.price.salePrice }}</small
+            <small class="cost" v-if="getDetail.price.onSale">
+              UZS {{ getDetail.price.salePrice }}</small
             >
           </p>
           <p class="d-flex justify-space-between">
-            <small>{{ data.quantityInPacket }} dona</small
+            <small>{{ getDetail.quantityInPacket }} dona</small
             ><small class="quantity">1 pachka</small>
           </p>
-          <p class="d-flex justify-space-between" v-if="!data.price.onSale">
+          <p class="d-flex justify-space-between" v-if="!getDetail.price.onSale">
             <small>1 pachka</small
-            ><small class="total">UZS {{ data.price.totalPrice }}</small>
+            ><small class="total">UZS {{ getDetail.price.totalPrice }}</small>
           </p>
-          <p class="d-flex justify-space-between" v-if="data.price.onSale">
+          <p class="d-flex justify-space-between" v-if="getDetail.price.onSale">
             <small>1 pachka</small
-            ><small class="total">UZS {{ data.price.totalSalePrice }}</small>
+            ><small class="total">UZS {{ getDetail.price.totalSalePrice }}</small>
           </p>
           <v-text-field
             name="soni"
@@ -79,7 +83,7 @@
           <v-btn color="#28235B" dark small>Korzinkaga saqlash</v-btn>
         </v-col>
         <v-col cols="12">
-          {{ data.description }}
+          {{ getDetail.description }}
         </v-col>
       </v-row>
     </div>
@@ -88,6 +92,8 @@
 
 <script>
 import StarRating from "vue-dynamic-star-rating";
+import store from '@/store';
+import { mapState } from 'vuex'
 export default {
   name: "OrderView",
   components: {
@@ -101,31 +107,20 @@ export default {
         starWidth: 18,
         starHeight: 18,
       },
-      data: {
-        name: "Shim",
-        description:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptate unde qui reiciendis debitis repellendus laboriosam rem itaque inventore, dicta eveniet! Odit illo, magnam molestias aliquid nihil nisi quas mollitia qui id minus impedit sit! Voluptates saepe, aspernatur at recusandae mollitia asperiores laudantium quaerat accusantium odio dolorum beatae veniam, illo quae dicta voluptatum temporibus consectetur architecto ab! Amet perspiciatis quo temporibus repudiandae totam veritatis provident expedita soluta deleniti beatae. Nemo, dolore. Placeat, ea? Itaque error dolorem sequi aspernatur id laboriosam laborum corporis quidem, excepturi consequatur recusandae non ipsa veritatis similique, laudantium et, temporibus eveniet quaerat minima nisi consectetur hic atque numquam.",
-        image: [],
-        price: {
-          onSale: true,
-          price: 80000.0,
-          salePrice: 79000.0,
-          totalPrice: 800000.0,
-          totalSalePrice: 790000.0,
-        },
-        id: 1,
-        productType: "men",
-        quantityInPacket: 10,
-        views: 0,
-        isNew: true,
-        rating: {
-          count: 8,
-          avarage: 2.6,
-        },
-      },
       length: 3,
       onboarding: 0,
     };
+  },
+  computed: {
+    ...mapState('shoes', {
+      productDetail: "productDetail"
+    }),
+    getDetail() {
+      if(this.productDetail){
+        return this.productDetail
+      }
+      return null
+    }
   },
   methods: {
     next() {
@@ -137,6 +132,10 @@ export default {
         this.onboarding - 1 < 0 ? this.length - 1 : this.onboarding - 1;
     },
   },
+  mounted() {
+    let id = this.$route.params.id
+    store.dispatch("shoes/proDetail", id)
+  }
 };
 </script>
 

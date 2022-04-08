@@ -86,4 +86,10 @@ img {
 .link {
   display: block;
 }
+
+.content-path {
+  .v-input__slot {
+    min-height: auto;
+  }
+}
 </style>
