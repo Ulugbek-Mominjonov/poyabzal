@@ -2,7 +2,7 @@
   <v-app>
     <site-nav />
 
-    <v-main>
+    <v-main class="site-main">
       <router-view />
     </v-main>
 
@@ -91,5 +91,8 @@ img {
   .v-input__slot {
     min-height: auto;
   }
+}
+.site-main {
+  background-color: rgb(244,247,253);
 }
 </style>

@@ -306,6 +306,7 @@ export default {
   display: flex;
   flex-direction: column;
   border: 1px solid #e5e5e5;
+  background-color: #fff;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -371,6 +372,7 @@ export default {
   border: 1px solid #28235b;
   border-radius: 10px;
   color: #28235b;
+  background-color: #fff;
   .aksiya {
     position: absolute;
     top: 10px;

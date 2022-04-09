@@ -281,5 +281,8 @@ export default {
   },
   getKorzinkaList() {
     return instance.get("/api/users/basket/")
+  },
+  deletePro(id) {
+    return instance.delete(`/api/users/basket/${id}/`)
   }
 };

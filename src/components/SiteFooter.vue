@@ -76,7 +76,7 @@ export default {};
 footer {
   padding-top: 60px;
   padding-bottom: 60px;
-  background-color: #f7f7f7;
+  background-color: #fff;
 }
 .footer-list {
   flex-direction: column;

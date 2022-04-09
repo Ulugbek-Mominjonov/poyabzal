@@ -27,7 +27,7 @@ export const actions = {
       .then(res => {
         commit("SET_LIST", res.data)
       })
-  }
+  },
 };
 export const getters = {
 
