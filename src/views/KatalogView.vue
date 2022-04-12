@@ -3,7 +3,7 @@
     <v-container class="katalog-container">
       <v-row class="katalog-row" align="baseline">
         <!-- katalog link  -->
-        <v-col class="katalog-link" cols="2">
+        <v-col class="katalog-link" cols="12" sm="3" md="2">
           <v-list dense>
             <v-list-item-group v-model="selectedItem" color="red">
               <v-list-item @click="changeMenu('barchasi', 0)">
@@ -36,7 +36,7 @@
         </v-col>
 
         <!-- katalog content  -->
-        <v-col class="katalog-content" cols="10">
+        <v-col class="katalog-content" cols="12" sm="9" md="10">
           <v-row class="content-row">
             <!-- content path  -->
             <v-col class="content-path" cols="12">
@@ -68,18 +68,23 @@
             <!-- shoes  -->
             <v-col
               class="shoes"
-              cols="3"
+              cols="12"
+              sm="6"
+              md="4"
+              lg="3"
               v-for="(item, index) in getShoes"
               :key="index"
+              align-self="stretch"
             >
               <div class="shoes-card">
                 <img
-                  class="shoes-img"
+                  class="mb-3 shoes-img"
                   :src="item.images[0]"
                   alt="Mahsulot rasmi yo'q"
+                  @click="redirectDetail(item.id)"
                 />
                 <span class="aksiya" v-if="item.price.onSale">Aksiya</span>
-                <p class="my-5 shoes-info">{{ item.name }}</p>
+                <p class="my-5 mt-auto shoes-info " @click="redirectDetail(item.id)">{{ item.name }}</p>
                 <div
                   class="d-flex align-center justify-space-between stars-wrapper"
                 >
@@ -120,7 +125,7 @@
                   outlined
                   height="30"
                   class="order"
-                  @click="enterDetail(item.id)"
+                  @click="enterDetail(item.id, item.id)"
                   >Buyurtma berish</v-btn
                 >
               </div>
@@ -138,10 +143,10 @@
           </v-row>
         </v-col>
       </v-row>
-      <v-dialog v-model="iconDialog" hide-overlay persistent  width="300">
+      <v-dialog v-model="iconDialog" hide-overlay persistent width="300">
         <v-card color="primary" dark class="pt-3">
           <v-card-text>
-            {{name}} korzinkaga qo'shildi
+            {{ name }} korzinkaga qo'shildi
             <v-progress-linear
               indeterminate
               color="white"
@@ -187,7 +192,7 @@ export default {
       select: "jhjgh",
       icon: null,
       iconDialog: false,
-      name: ""
+      name: "",
     };
   },
   computed: {
@@ -224,10 +229,15 @@ export default {
       };
       store.dispatch("shoes/proCat", data);
     },
-    enterDetail(id) {
-      this.$router.push({
-        name: "OrderView",
-        params: { id: id },
+    enterDetail(id, name) {
+      this.name = name;
+      let data = {
+        product: id,
+        quantity: 1,
+      };
+      store.dispatch("korzinka/addKorzinka", data).then(() => {
+        this.icon = id;
+        this.$router.push("/Korzinka");
       });
     },
     changePage(value) {
@@ -271,7 +281,7 @@ export default {
       store.dispatch("shoes/proSort", data);
     },
     addPro(id, name) {
-      this.name = name
+      this.name = name;
       let data = {
         product: id,
         quantity: 1,
@@ -281,6 +291,12 @@ export default {
         this.iconDialog = true;
       });
     },
+    redirectDetail(id) {
+      this.$router.push({
+        name: "OrderView",
+        params: {id: id},
+      })
+    }
   },
   mounted() {
     store.dispatch("shoes/getCategory");
@@ -368,6 +384,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  height: 100%;
   padding: 10px;
   border: 1px solid #28235b;
   border-radius: 10px;
@@ -388,8 +405,9 @@ export default {
   .shoes-img {
     display: block;
     width: 100%;
-    height: 200px;
+    max-height: 300px;
     object-fit: cover;
+    cursor: pointer;
   }
   .shoes-cat {
     align-self: flex-start;
@@ -410,6 +428,7 @@ export default {
     font-weight: 400;
     font-size: 15px;
     line-height: 17px;
+    cursor: pointer;
   }
   .stars-wrapper {
     margin-bottom: 10px;
@@ -445,5 +464,34 @@ export default {
   .basket-dashed {
     color: red !important;
   }
+}
+@media screen and (max-width: 816px) {
+  .content-path {
+  margin-bottom: 40px;
+
+  .filter {
+    position: absolute;
+    top: 55px;
+    right: 10px;
+    width: 150px;
+  }
+  .content-name {
+    font-size: 18px;
+    margin-right: 10px;
+  }
+  .content-parent-path {
+    margin-right: 5px;
+  }
+}
+}
+@media screen and (max-width: 386px) {
+  .content-path {
+  margin-bottom: 40px;
+
+  .content-name {
+    font-size: 15px;
+    margin-right: 10px;
+  }
+}
 }
 </style>

@@ -67,23 +67,49 @@
           <p class="all-summ">Jami miqdori:</p>
           <p class="summ">{{ getSumm }}</p>
           <v-divider></v-divider>
-          <v-btn v-if="getList == []" class="order-btn" color="success" small>Buyurtma</v-btn>
+          <v-btn
+            v-if="getList && getList.length > 0"
+            class="order-btn py-6"
+            color="success"
+            @click="orderCreate"
+            >Buyurtma berish</v-btn
+          >
         </div>
       </v-col>
+      <v-dialog
+        v-model="dialog"
+        scrollable
+        max-width="500px"
+        transition="dialog-transition"
+      >
+        <v-card class="py-8 px-8">
+          <v-card-text>
+            <v-text-field
+              label="Address"
+              v-model="userDate.liveAddress"
+              class="pt-5"
+              prepend-icon="mdi-city"
+            ></v-text-field>
+            <v-textarea
+              label="Izoh qoldiring"
+              rows="1"
+              v-model="comment"
+              prepend-icon="mdi-comment"
+            ></v-textarea>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="warning" text @click="dialog = false"
+              >Bekor qilish</v-btn
+            >
+            <v-btn color="success" text @click="orderSuccess"
+              >Buyurtma berish</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
-
-    <v-dialog
-      v-model="dialog"
-      scrollable
-      max-width="500px"
-      transition="dialog-transition"
-    >
-      <v-card>
-        <v-card-title primary-title>
-          Korkinkadan Mahsulot o'chirilsinmi
-        </v-card-title>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -96,11 +122,15 @@ export default {
     return {
       count: 16,
       dialog: false,
+      comment: ""
     };
   },
   computed: {
     ...mapState("korzinka", {
       korzinkaList: "korzinkaList",
+    }),
+    ...mapState("user", {
+      userDate: "user",
     }),
     getList() {
       if (this.korzinkaList) {
@@ -164,6 +194,25 @@ export default {
       EventService.deletePro(id).then(() => {
         store.dispatch("korzinka/korzinkaList");
       });
+    },
+    orderCreate() {
+      this.dialog = true;
+    },
+    orderSuccess() {
+      let latitude = this.userDate.latitude;
+      let longitude = this.userDate.longitude;
+      let address = this.userDate.liveAddress;
+      let comment = this.comment
+      let data = {
+        latitude,
+        longitude,
+        address,
+        comment
+      };
+      EventService.orderCreate(data).then(() => {
+        store.dispatch("korzinka/korzinkaList");
+        this.dialog = false
+      })
     },
   },
   mounted() {

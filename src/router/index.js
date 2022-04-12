@@ -3,6 +3,10 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import OrderView from "../views/OrderView.vue";
 import KorzinkaView from "../views/KorzinkaView.vue";
+import ProfileView from "../views/ProfileView.vue";
+import UserDate from "../views/UserDate.vue";
+import UserOrder from "../views/UserOrder.vue";
+import OrderDetail from "../views/OrderDetail.vue";
 
 Vue.use(VueRouter);
 
@@ -30,6 +34,27 @@ const routes = [
     props: true,
     component: KorzinkaView,
   },
+  {
+    path: "/orderDetail/:id",
+    name: "OrderDetail",
+    props: true,
+    component: OrderDetail,
+  },
+  {
+    path: "/user",
+    name: "ProfileView",
+    component: ProfileView,
+    children: [
+      {
+        path: "profile",
+        component: UserDate,
+      },
+      {
+        path: "order",
+        component: UserOrder,
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
@@ -39,9 +64,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (!localStorage.getItem("access_token")){
-    next({ name: "home" });
-  }
-  else next()
+  if (!localStorage.getItem("access_token")) {
+    next("/");
+  } else next();
 });
 export default router;

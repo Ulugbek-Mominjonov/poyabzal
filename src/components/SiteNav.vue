@@ -77,12 +77,17 @@
                     <v-icon>mdi-account</v-icon>
                   </v-btn>
                 </template>
-                <span>{{ userData.firstName}} {{userData.lastName}}</span>
+                <span>{{ userData.firstName }} {{ userData.lastName }}</span>
               </v-tooltip>
             </template>
             <v-list>
               <v-list-item v-for="(item, index) in items" :key="index">
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                <v-list-item-title>
+                  <router-link :to="item.to" class="link nav-link">
+                    <v-icon class="nav-icon">{{item.icon}}</v-icon>
+                    {{ item.title }}
+                  </router-link>
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -242,25 +247,45 @@
         <v-col class="header-botoom-col" cols="11">
           <ul class="d-flex px-3 justify-space-between align-center nav_list">
             <li class="nav-link">
-              <div class="d-flex align-center" @click="changeTip('barchasi')" :class="{'active': tip=='barchasi'}">
+              <div
+                class="d-flex align-center"
+                @click="changeTip('barchasi')"
+                :class="{ active: tip == 'barchasi' }"
+              >
                 <v-icon class="mr-1 cat-icon" centered>mdi-menu</v-icon>
                 Barchasi
               </div>
             </li>
             <li class="nav-link">
-              <div @click="changeTip('new')" :class="{'active': tip=='new'}">Yangilar</div>
+              <div @click="changeTip('new')" :class="{ active: tip == 'new' }">
+                Yangilar
+              </div>
             </li>
             <li class="nav-link">
-              <div @click="changeTip('men')" :class="{'active': tip=='men'}">Erkaklar</div>
+              <div @click="changeTip('men')" :class="{ active: tip == 'men' }">
+                Erkaklar
+              </div>
             </li>
             <li class="nav-link">
-              <div @click="changeTip('women')" :class="{'active': tip=='women'}">Ayollar</div>
+              <div
+                @click="changeTip('women')"
+                :class="{ active: tip == 'women' }"
+              >
+                Ayollar
+              </div>
             </li>
             <li class="nav-link">
-              <div @click="changeTip('kid')" :class="{'active': tip=='kid'}">Bolalar</div>
+              <div @click="changeTip('kid')" :class="{ active: tip == 'kid' }">
+                Bolalar
+              </div>
             </li>
             <li class="nav-link">
-              <div @click="changeTip('sale')" :class="{'active': tip=='sale'}">Aksiya</div>
+              <div
+                @click="changeTip('sale')"
+                :class="{ active: tip == 'sale' }"
+              >
+                Aksiya
+              </div>
             </li>
             <li class="nav-link">
               <router-link class="link d-flex align-center" to="/Korzinka">
@@ -315,55 +340,66 @@
         >
           <v-list-item>
             <v-list-item-title>
-              <router-link
-                class="link drawer-link d-flex align-center"
-                to="/katalog"
+              <div
+                class="d-flex align-center"
+                @click="changeTip('barchasi')"
+                :class="{ active: tip == 'barchasi' }"
               >
-                <v-icon class="mr-1" centered>mdi-menu</v-icon>
-                Katalog
-              </router-link>
+                <v-icon class="mr-1 cat-icon" centered>mdi-menu</v-icon>
+                Barchasi
+              </div>
             </v-list-item-title>
           </v-list-item>
 
           <v-list-item>
             <v-list-item-title>
-              <router-link class="link drawer-link" to="#"
-                >Xizmatlar</router-link
+              <div @click="changeTip('new')" :class="{ active: tip == 'new' }">
+                Yangilar
+              </div>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title>
+              <div @click="changeTip('men')" :class="{ active: tip == 'men' }">
+                Erkaklar
+              </div>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title>
+              <div
+                @click="changeTip('women')"
+                :class="{ active: tip == 'women' }"
               >
+                Ayollar
+              </div>
             </v-list-item-title>
           </v-list-item>
 
           <v-list-item>
             <v-list-item-title>
-              <router-link class="link drawer-link" to="#"
-                >Galereya</router-link
+              <div @click="changeTip('kid')" :class="{ active: tip == 'kid' }">
+                Bolalar
+              </div>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title>
+              <div
+                @click="changeTip('sale')"
+                :class="{ active: tip == 'sale' }"
               >
+                Aksiya
+              </div>
             </v-list-item-title>
           </v-list-item>
 
           <v-list-item>
             <v-list-item-title>
-              <router-link class="link drawer-link" to="#">Aksiya</router-link>
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>
-              <router-link class="link drawer-link" to="#"
-                >Kompaniya haqida</router-link
-              >
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>
-              <router-link class="link drawer-link" to="#">Kontakt</router-link>
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>
-              <router-link class="link drawer-link d-flex align-center" to="#">
+              <router-link class="link d-flex align-center" to="/Korzinka">
                 <v-icon class="mr-1">mdi-basket-plus</v-icon>
                 Korzinka
               </router-link>
@@ -427,18 +463,21 @@ export default {
     ],
     dialogThree: false,
     message: "",
-    items: [{ title: "Profil" }, { title: "Korzinka" }],
-    tip: null
+    items: [
+      { title: "Profil", to: "/user", icon: "mdi-account" },
+      { title: "Korzinka", to: "/Korzinka", icon: "mdi-basket" },
+    ],
+    tip: null,
   }),
   computed: {
     ...mapState("auth", {
       isHave: "isHave",
     }),
     ...mapState("user", {
-      userData: "user"
+      userData: "user",
     }),
-    ...mapState('shoes', {
-      categoryId: 'catId'
+    ...mapState("shoes", {
+      categoryId: "catId",
     }),
     isUser() {
       if (localStorage.getItem("access_token")) {
@@ -524,35 +563,32 @@ export default {
         location.reload();
       });
     },
-     changeTip(value) {
-      this.tip = value
-      localStorage.setItem('tip', value)
+    changeTip(value) {
+      this.tip = value;
+      localStorage.setItem("tip", value);
       console.log(2);
-      if(value=='barchasi') {
-        store.commit("shoes/IS_SALE",0)
-         store.dispatch("shoes/productList")
-          .then(() => {
-            this.$router.push({name: "product", params: {name: value}})
-          })
+      if (value == "barchasi") {
+        store.commit("shoes/IS_SALE", 0);
+        store.dispatch("shoes/productList").then(() => {
+          this.$router.push({ name: "product", params: { name: value } });
+        });
+      } else {
+        store.commit("shoes/IS_SALE", 0);
+        store.dispatch("shoes/proTip", value).then(() => {
+          this.$router.push({ name: "product", params: { name: value } });
+        });
       }
-      else {
-        store.commit("shoes/IS_SALE",0)
-        store.dispatch('shoes/proTip', value)
-          .then(() => {
-            this.$router.push({name: "product", params: {name: value}})
-          })
-      }
-    }
+    },
   },
   directives: {
     imask: IMaskDirective,
   },
   mounted() {
-    if(localStorage.getItem("access_token")) {
-      store.dispatch('user/UserData')
+    if (localStorage.getItem("access_token")) {
+      store.dispatch("user/UserData");
     }
-    this.tip = localStorage.getItem('tip')
-  }
+    this.tip = localStorage.getItem("tip");
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -631,6 +667,17 @@ export default {
   }
   &:hover:before {
     width: 100%;
+  }
+}
+.nav-link {
+  font-weight: 500;
+  color: #222;
+  transition: all .3s;
+  &:hover {
+    color: red;
+    .nav-icon {
+      color: red;
+    }
   }
 }
 .header-botoom-col {

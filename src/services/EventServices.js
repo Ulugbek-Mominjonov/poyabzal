@@ -284,5 +284,21 @@ export default {
   },
   deletePro(id) {
     return instance.delete(`/api/users/basket/${id}/`)
+  },
+  setComment(data) {
+    return instance.post("/api/shop/comment/", data)
+  },
+  getOrderList() {
+    return instance.get("/api/users/order/")
+  },
+  putUserData(data) {
+    return instance.put("/api/auth/profile/", data)
+  },
+  orderCreate(data) {
+    return instance.post("/api/users/order/", data)
+  },
+  getOrderDetail(id) {
+    return instance.get(`/api/users/order/${id}/`)
   }
+
 };
