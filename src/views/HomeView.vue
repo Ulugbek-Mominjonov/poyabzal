@@ -6,168 +6,22 @@
         <v-col cols="12">
           <section-title content="Mashhur Oyoq kiyimlar" />
         </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
+        <v-col class="furniture" cols="12" sm="6" md="4" lg="3" v-for="item in getPopularPro" :key="item.id">
           <div class="link furniture-link">
             <img
               class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
+              :src="item.images[0]"
+              alt="Mahsulot rasmi"
             />
             <div class="furniture-info">
               <v-icon class="liked" @click="heart">mdi-heart</v-icon>
               <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
+                <span>{{item.name}}</span>
+                <small :class="{'text-decoration-line-through': item.price.onSale}">{{item.price.price}} UZS</small>
+                <small v-if="item.price.onSale">{{item.price.salePrice}} UZS</small>
               </h3>
 
-              <router-link to="#" class="link furniture-btn"
-                >Batafsil
-                <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
-              </router-link>
-            </div>
-          </div>
-        </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
-          <div class="link furniture-link">
-            <img
-              class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
-            />
-            <div class="furniture-info">
-              <v-icon class="liked" @click="heart">mdi-heart</v-icon>
-              <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
-              </h3>
-
-              <router-link to="#" class="link furniture-btn"
-                >Batafsil
-                <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
-              </router-link>
-            </div>
-          </div>
-        </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
-          <div class="link furniture-link">
-            <img
-              class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
-            />
-            <div class="furniture-info">
-              <v-icon class="liked" @click="heart">mdi-heart</v-icon>
-              <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
-              </h3>
-
-              <router-link to="#" class="link furniture-btn"
-                >Batafsil
-                <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
-              </router-link>
-            </div>
-          </div>
-        </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
-          <div class="link furniture-link">
-            <img
-              class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
-            />
-            <div class="furniture-info">
-              <v-icon class="liked" @click="heart">mdi-heart</v-icon>
-              <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
-              </h3>
-
-              <router-link to="#" class="link furniture-btn"
-                >Batafsil
-                <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
-              </router-link>
-            </div>
-          </div>
-        </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
-          <div class="link furniture-link">
-            <img
-              class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
-            />
-            <div class="furniture-info">
-              <v-icon class="liked" @click="heart">mdi-heart</v-icon>
-              <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
-              </h3>
-
-              <router-link to="#" class="link furniture-btn"
-                >Batafsil
-                <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
-              </router-link>
-            </div>
-          </div>
-        </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
-          <div class="link furniture-link">
-            <img
-              class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
-            />
-            <div class="furniture-info">
-              <v-icon class="liked" @click="heart">mdi-heart</v-icon>
-              <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
-              </h3>
-
-              <router-link to="#" class="link furniture-btn"
-                >Batafsil
-                <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
-              </router-link>
-            </div>
-          </div>
-        </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
-          <div class="link furniture-link">
-            <img
-              class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
-            />
-            <div class="furniture-info">
-              <v-icon class="liked" @click="heart">mdi-heart</v-icon>
-              <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
-              </h3>
-
-              <router-link to="#" class="link furniture-btn"
-                >Batafsil
-                <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
-              </router-link>
-            </div>
-          </div>
-        </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3">
-          <div class="link furniture-link">
-            <img
-              class="furniture-img"
-              src="../assets/popular-shoes.png"
-              alt="img"
-            />
-            <div class="furniture-info">
-              <v-icon class="liked" @click="heart">mdi-heart</v-icon>
-              <h3 class="furniture-cat">
-                <span>Category name</span>
-                <small>Mahsulot narxi</small>
-              </h3>
-
-              <router-link to="#" class="link furniture-btn"
+              <router-link :to="{name: 'OrderView', params: {id: item.id}}" class="link furniture-btn"
                 >Batafsil
                 <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
               </router-link>
@@ -333,6 +187,7 @@
 <script>
 import HomeHero from "@/components/HomeHero.vue";
 import SectionTitle from "@/components/SectionTitle.vue";
+import EventServices from '@/services/EventServices';
 export default {
   components: {
     HomeHero,
@@ -352,7 +207,16 @@ export default {
       name: "",
       phone: "",
       question: "",
+      popularPro: null
     };
+  },
+  computed: {
+    getPopularPro() {
+      if (this.popularPro && this.popularPro.results) {
+        return this.popularPro.results.slice(0, 8)
+      }
+      return []
+    }
   },
   methods: {
     heart(ev) {
@@ -371,6 +235,11 @@ export default {
       console.log(data);
     },
   },
+  mounted () {
+    EventServices.getPopularPro().then(res => {
+      this.popularPro = res.data
+    });
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -387,6 +256,12 @@ export default {
 .furniture-link {
   position: relative;
   display: block;
+
+  .furniture-img {
+    max-height: 300px;
+    object-fit: cover;
+    object-position: center;
+  }
 
   .furniture-info {
     // display: none;
@@ -421,8 +296,8 @@ export default {
       transform: translateX(-50%) translateY(-50%);
       margin: 0;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 19px;
+      font-size: 18px;
+      line-height: 20px;
       color: #ffffff;
     }
     .furniture-btn {

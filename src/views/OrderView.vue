@@ -90,9 +90,11 @@
             outlined
             dense
             class="mt-8 count"
+            v-model="count"
           ></v-text-field>
 
-          <v-btn color="#28235B" dark small>Korzinkaga saqlash</v-btn>
+          <v-btn color="#28235B" dark small @click="addPro(getDetail.id, getDetail.name)">Korzinkaga saqlash</v-btn>
+          <v-btn color="success" class="ml-5" dark small @click="setOrder(getDetail.id)">Buyurtma berish</v-btn>
         </v-col>
         <v-col cols="12">
           {{ getDetail.description }}
@@ -191,6 +193,18 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="iconDialog" hide-overlay persistent width="300">
+        <v-card color="primary" dark class="pt-3">
+          <v-card-text>
+            {{ name }} korzinkaga qo'shildi
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
   </v-container>
 </template>
 
@@ -230,6 +244,9 @@ export default {
         (v) => !!v || "Iltimos biroz comment yozing",
         (v) => v.length >= 3 || "Izoh kamida 3 so'z bo'lishi kerak",
       ],
+      name: "",
+      count: 1,
+      iconDialog: false
     };
   },
   computed: {
@@ -300,6 +317,27 @@ export default {
           })
       }
     },
+    addPro(id, name) {
+      this.name = name;
+      let count = this.count
+      let data = {
+        product: id,
+        quantity: count,
+      };
+      store.dispatch("korzinka/addKorzinka", data).then(() => {
+        this.iconDialog = true;
+      });
+    },
+    setOrder(id) {
+      let count = this.count
+      let data = {
+        product: id,
+        quantity: count,
+      };
+      store.dispatch("korzinka/addKorzinka", data).then(() => {
+        this.$router.push("/Korzinka");
+      });
+    },
   },
   mounted() {
     let id = this.$route.params.id;
@@ -309,6 +347,13 @@ export default {
           this.addComment(this.$route.query.comment)
         }
       })
+  },
+  watch: {
+    iconDialog(val) {
+      if (!val) return;
+
+      setTimeout(() => (this.iconDialog = false), 1000);
+    },
   },
 };
 </script>
@@ -351,6 +396,7 @@ export default {
   color: red;
 }
 .comments {
+  margin-top: 50px;
   padding: 40px;
   background-color: #fff;
   .user-name {

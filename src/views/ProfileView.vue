@@ -3,7 +3,7 @@
     <v-container class="user-container">
       <h2 class="mb-9 user-heading">Profile</h2>
       <v-row class="user-row">
-        <v-col cols="4" class="user-link">
+        <v-col cols="12" md="4" class="user-link">
           <h4>
             Assalomu alaykum <span>{{ userDate.firstName }}</span>
           </h4>
@@ -31,7 +31,7 @@
             </v-list-item-group>
           </v-list>
         </v-col>
-        <v-col cols="8" class="px-9 py-9">
+        <v-col cols="12" md="8" class="px-9 py-9 ">
           <router-view />
         </v-col>
       </v-row>

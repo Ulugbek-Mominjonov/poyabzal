@@ -1,18 +1,19 @@
 <template>
   <v-container class="mb-10">
-    <v-row class="korzinka-row" justify="space-between">
+    <v-row class="korzinka-row" justify-md="space-between" justify="center">
       <v-col cols="12" class="mt-3 mb-6 korzinka-title"> Korzinka </v-col>
-      <v-col cols="8">
+      <v-col cols="12" sm="11" md="8" order-md="1" order="2">
         <v-row
           v-for="(item, index) in getList"
           :key="index"
           class="pro-row pr-5"
         >
-          <v-col cols="2" class="pro-img">
+          <v-col cols="4" sm="2" class="pro-img">
             <img :src="item.productDetail.images[0]" alt="Mahsulot rasmi" />
           </v-col>
           <v-col
-            cols="10"
+            cols="8"
+            md="10"
             class="d-flex align-center justify-space-between pro-info"
           >
             <h3 class="pro-name">{{ item.productDetail.name }}</h3>
@@ -21,6 +22,7 @@
                 color="#28235B"
                 small
                 dark
+                class="input-btn"
                 @click="lessPro(item.productDetail.id, item.id, index)"
               >
                 <v-icon dense>mdi-minus</v-icon>
@@ -36,6 +38,7 @@
                 small
                 dark
                 @click="addPro(item.productDetail.id, index)"
+                class="input-btn"
               >
                 <v-icon dense>mdi-plus</v-icon>
               </v-btn>
@@ -59,7 +62,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="6" order-md="2" order="1" sm="6" md="4" class="mb-sm-7">
         <div class="content-wrapper">
           <p class="korzinka-count">
             Savatdagi Mahsulotlar soni: <br /><span>{{ getList.length }}</span>
@@ -278,5 +281,43 @@ export default {
 }
 .order-btn {
   margin-top: 20px;
+}
+
+@media screen and (max-width: 732px) {
+  .pro-info {
+    flex-wrap: wrap;
+
+    .pro-name {
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: 444px) {
+  .pro-info {
+    .pro-input {
+      width: 50px;
+    }
+    .input-btn {
+      padding-left: 2px !important;
+      padding-right: 2px !important;
+    }
+  }
+}
+@media screen and (max-width: 410px) {
+  .pro-info {
+    margin-left: auto;
+    align-items: center;
+    .pro-input {
+      width: 50px;
+    }
+    .btn-group {
+      margin-top: 10px;
+    }
+    .cost-range {
+      margin-top: 10px;
+      width: 100%;
+    }
+  }
 }
 </style>

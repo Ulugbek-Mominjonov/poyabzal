@@ -299,6 +299,13 @@ export default {
   },
   getOrderDetail(id) {
     return instance.get(`/api/users/order/${id}/`)
+  },
+  getPopularPro() {
+    return instance.get("/api/shop/product/", {
+      params: {
+        ordering: "views"
+      }
+    })
   }
 
 };

@@ -328,6 +328,9 @@ export default {
 /* -------------------------------------------------------------------------- */
 /*                               katalog content                              */
 /* -------------------------------------------------------------------------- */
+.content-row {
+  margin-bottom: 50px;
+}
 .content-path {
   display: flex;
   align-items: flex-end;
