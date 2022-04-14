@@ -7,7 +7,8 @@ export const state = {
   pList: [],
   catId: 0,
   productDetail: {},
-  sale: 0
+  sale: 0,
+  data: {}
 };
 export const mutations = {
   SET_CAT(state, payload) {
@@ -24,6 +25,10 @@ export const mutations = {
   },
   IS_SALE(state, value) {
     state.sale = value
+  },
+  SET_DATA(state, data) {
+    state.data = data
+    console.log(data);
   }
 };
 export const actions = {
@@ -33,26 +38,8 @@ export const actions = {
         commit("SET_CAT", res.data)
       })
   },
-  productList({commit}) {
-    EventService.getProductList()
-      .then(res => {
-        commit("SET_LIST", res.data)
-      })
-  },
-  proTip({commit}, value) {
-    EventService.getProByFilter(value)
-      .then(res => {
-        commit("SET_LIST", res.data)
-      })
-  },
   proCat({commit}, value) {
     EventService.getProCat(value)
-      .then(res => {
-        commit("SET_LIST", res.data)
-      })
-  },
-  pagination({commit}, value) {
-    EventService.getPagination(value)
       .then(res => {
         commit("SET_LIST", res.data)
       })
@@ -63,8 +50,8 @@ export const actions = {
         commit('SET_DETAIL', res.data)
       })
   },
-  proSort({commit}, payload) {
-    EventService.setSort(payload)
+  filter({commit}, payload) {
+    EventService.getFilter(payload)
       .then(res => {
         commit("SET_LIST", res.data)
       })

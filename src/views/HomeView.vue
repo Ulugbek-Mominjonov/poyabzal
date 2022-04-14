@@ -239,6 +239,7 @@ export default {
     EventServices.getPopularPro().then(res => {
       this.popularPro = res.data
     });
+    localStorage.removeItem("tip")
   },
 };
 </script>

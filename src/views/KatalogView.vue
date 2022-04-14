@@ -84,7 +84,12 @@
                   @click="redirectDetail(item.id)"
                 />
                 <span class="aksiya" v-if="item.price.onSale">Aksiya</span>
-                <p class="my-5 mt-auto shoes-info " @click="redirectDetail(item.id)">{{ item.name }}</p>
+                <p
+                  class="my-5 mt-auto shoes-info"
+                  @click="redirectDetail(item.id)"
+                >
+                  {{ item.name }}
+                </p>
                 <div
                   class="d-flex align-center justify-space-between stars-wrapper"
                 >
@@ -132,7 +137,7 @@
             </v-col>
             <v-col cols="12" class="ml-auto" v-if="pageCount > 1">
               <v-pagination
-                v-model="page"
+                v-model="data.page"
                 class="my-4"
                 :length="pageCount"
                 circle
@@ -201,6 +206,7 @@ export default {
       productList: "pList",
       categoryId: "catId",
       onSale: "sale",
+      data: "data",
     }),
     getShoes() {
       if (this.productList) {
@@ -220,14 +226,16 @@ export default {
   },
   methods: {
     changeMenu(name, id) {
-      console.log(id);
       this.pathName = name;
-      let tip = this.$route.params.name;
-      let data = {
-        productType: tip,
-        category: id,
-      };
-      store.dispatch("shoes/proCat", data);
+      if (id != 0) {
+        this.data.category = id;
+      } else {
+        if ("category" in this.data) {
+          delete this.data.category;
+        }
+      }
+      store.commit("shoes/SET_DATA", this.data);
+      store.dispatch("shoes/filter", this.data);
     },
     enterDetail(id, name) {
       this.name = name;
@@ -241,16 +249,9 @@ export default {
       });
     },
     changePage(value) {
-      let tip = this.$route.params.name;
-      let cat = this.selectedItem;
-      let page = value;
-      console.log(value);
-      let data = {
-        category: cat,
-        productType: tip,
-        page: page,
-      };
-      store.dispatch("shoes/pagination", data);
+      this.data.page = value;
+      store.commit("shoes/SET_DATA", this.data);
+      store.dispatch("shoes/filter", this.data);
     },
     sort(value) {
       let order;
@@ -271,14 +272,9 @@ export default {
           order = "-views";
           break;
       }
-      let tip = this.$route.params.name;
-      let cat = this.selectedItem;
-      let data = {
-        category: cat,
-        productType: tip,
-        order: order,
-      };
-      store.dispatch("shoes/proSort", data);
+      this.data.ordering = order;
+      store.commit("shoes/SET_DATA", this.data);
+      store.dispatch("shoes/filter", this.data);
     },
     addPro(id, name) {
       this.name = name;
@@ -294,18 +290,55 @@ export default {
     redirectDetail(id) {
       this.$router.push({
         name: "OrderView",
-        params: {id: id},
-      })
-    }
+        params: { id: id },
+      });
+    },
   },
   mounted() {
     store.dispatch("shoes/getCategory");
-    let tip = this.$route.params.name;
-    if (tip != "barchasi") {
-      store.dispatch("shoes/proTip", tip);
+    let value = this.$route.params.name;
+    if (value != "barchasi") {
+      if (value != "new" && value != "sale") {
+        this.data.productType = value;
+        if ("isNew" in this.data) {
+          delete this.data.isNew;
+        }
+        if ("onSale" in this.data) {
+          delete this.data.onSale;
+        }
+      } else if (value == "sale") {
+        this.data.onSale = true;
+        if ("productType" in this.data) {
+          delete this.data.productType;
+        }
+        if ("isNew" in this.data) {
+          delete this.data.isNew;
+        }
+      } else {
+        this.data.isNew = 1;
+        if ("productType" in this.data) {
+          delete this.data.productType;
+        }
+        if ("onSale" in this.data) {
+          delete this.data.onSale;
+        }
+      }
     } else {
-      store.dispatch("shoes/productList");
+      if ("productType" in this.data) {
+        delete this.data.productType;
+      }
+      if ("isNew" in this.data) {
+        delete this.data.isNew;
+      }
+      if ("onSale" in this.data) {
+        delete this.data.onSale;
+      }
     }
+    if ("page" in this.data) {
+      this.data.page = 1;
+    }
+    store.commit("shoes/SET_DATA", this.data);
+    store.dispatch("shoes/filter", this.data);
   },
   watch: {
     iconDialog(val) {
@@ -470,31 +503,31 @@ export default {
 }
 @media screen and (max-width: 816px) {
   .content-path {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 
-  .filter {
-    position: absolute;
-    top: 55px;
-    right: 10px;
-    width: 150px;
+    .filter {
+      position: absolute;
+      top: 55px;
+      right: 10px;
+      width: 150px;
+    }
+    .content-name {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    .content-parent-path {
+      margin-right: 5px;
+    }
   }
-  .content-name {
-    font-size: 18px;
-    margin-right: 10px;
-  }
-  .content-parent-path {
-    margin-right: 5px;
-  }
-}
 }
 @media screen and (max-width: 386px) {
   .content-path {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 
-  .content-name {
-    font-size: 15px;
-    margin-right: 10px;
+    .content-name {
+      font-size: 15px;
+      margin-right: 10px;
+    }
   }
-}
 }
 </style>

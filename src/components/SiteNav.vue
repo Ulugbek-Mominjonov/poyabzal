@@ -18,7 +18,9 @@
         >
           <div class="search-wrapper">
             <input class="search" type="text" v-model="search" />
-            <v-icon class="search-icon">mdi-magnify</v-icon>
+            <v-icon class="search-icon" @click="searchPro()"
+              >mdi-magnify</v-icon
+            >
           </div>
         </v-col>
         <v-col
@@ -84,7 +86,7 @@
               <v-list-item v-for="(item, index) in items" :key="index">
                 <v-list-item-title>
                   <router-link :to="item.to" class="link nav-link">
-                    <v-icon class="nav-icon">{{item.icon}}</v-icon>
+                    <v-icon class="nav-icon">{{ item.icon }}</v-icon>
                     {{ item.title }}
                   </router-link>
                 </v-list-item-title>
@@ -296,7 +298,7 @@
           </ul>
         </v-col>
         <v-col class="header-botoom-col" cols="1">
-          <v-select :items="languages" v-model="language"></v-select>
+          <!-- <v-select :items="languages" v-model="language"></v-select> -->
         </v-col>
       </v-row>
     </v-container>
@@ -430,7 +432,7 @@ export default {
   name: "SiteNav",
 
   data: () => ({
-    search: "",
+    search: null,
     dialog: false,
     language: "Uz",
     languages: ["Uz", "Eng", "Ru"],
@@ -478,6 +480,7 @@ export default {
     }),
     ...mapState("shoes", {
       categoryId: "catId",
+      data: "data",
     }),
     isUser() {
       if (localStorage.getItem("access_token")) {
@@ -564,20 +567,67 @@ export default {
       });
     },
     changeTip(value) {
-      this.tip = value;
+      let search = this.search;
       localStorage.setItem("tip", value);
-      console.log(2);
-      if (value == "barchasi") {
-        store.commit("shoes/IS_SALE", 0);
-        store.dispatch("shoes/productList").then(() => {
+      if (value != "barchasi") {
+        if (value != "new" && value != "sale") {
+          this.data.productType = value;
+          if ("isNew" in this.data) {
+            delete this.data.isNew;
+          }
+          if ("onSale" in this.data) {
+            delete this.data.onSale;
+          }
+        } else if (value == "sale") {
+          this.data.onSale = true;
+          if ("productType" in this.data) {
+            delete this.data.productType;
+          }
+          if ("isNew" in this.data) {
+            delete this.data.isNew;
+          }
+        } else {
+          this.data.isNew = 1;
+          if ("productType" in this.data) {
+            delete this.data.productType;
+          }
+          if ("onSale" in this.data) {
+            delete this.data.onSale;
+          }
+        }
+      } else {
+        if ("productType" in this.data) {
+          delete this.data.productType;
+        }
+        if ("isNew" in this.data) {
+          delete this.data.isNew;
+        }
+        if ("onSale" in this.data) {
+          delete this.data.onSale;
+        }
+      }
+      if (search) {
+        this.data.search = search;
+      } else {
+        if ("search" in this.data) {
+          delete this.data.search;
+        }
+      }
+      if ("page" in this.data) {
+        this.data.page = 1;
+      }
+      store.commit("shoes/SET_DATA", this.data);
+      if (this.tip != value) {
+        this.tip = value;
+        store.dispatch("shoes/filter", this.data).then(() => {
           this.$router.push({ name: "product", params: { name: value } });
         });
       } else {
-        store.commit("shoes/IS_SALE", 0);
-        store.dispatch("shoes/proTip", value).then(() => {
-          this.$router.push({ name: "product", params: { name: value } });
-        });
+        store.dispatch("shoes/filter", this.data);
       }
+    },
+    searchPro() {
+      this.changeTip("barchasi");
     },
   },
   directives: {
@@ -672,7 +722,7 @@ export default {
 .nav-link {
   font-weight: 500;
   color: #222;
-  transition: all .3s;
+  transition: all 0.3s;
   &:hover {
     color: red;
     .nav-icon {

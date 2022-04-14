@@ -347,6 +347,7 @@ export default {
           this.addComment(this.$route.query.comment)
         }
       })
+    localStorage.removeItem("tip")
   },
   watch: {
     iconDialog(val) {

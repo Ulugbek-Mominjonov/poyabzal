@@ -220,6 +220,7 @@ export default {
   },
   mounted() {
     store.dispatch("korzinka/korzinkaList");
+    localStorage.removeItem("tip")
   },
 };
 </script>

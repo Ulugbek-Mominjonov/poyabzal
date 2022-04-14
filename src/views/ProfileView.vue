@@ -21,7 +21,7 @@
 
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title class="logout">Chiqish</v-list-item-title>
+                  <v-list-item-title class="logout" @click="logout">Chiqish</v-list-item-title>
                 </v-list-item-content>
 
                 <v-list-item-icon>
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-// import store from "@/store";
+import store from "@/store";
 import { mapState } from "vuex";
 // import EventServices from '@/services/EventServices';
 export default {
@@ -67,7 +67,14 @@ export default {
     }),
   },
   methods: {
+    logout() {
+      store.commit("auth/clear_data")
+      location.reload()
+    }
   },
+  mounted() {
+    localStorage.removeItem("tip")
+  }
 };
 </script>
 
