@@ -12,9 +12,6 @@
           <h4 class="footer-title">Menyu</h4>
           <ul class="list-unstyle footer-list">
             <li class="footer-item">
-              <router-link class="link footer-link" to="#">Katalog</router-link>
-            </li>
-            <li class="footer-item">
               <router-link class="link footer-link" to="#"
                 >Xizmatlar</router-link
               >
@@ -25,10 +22,7 @@
               >
             </li>
             <li class="footer-item">
-              <router-link class="link footer-link" to="#">Aksiya</router-link>
-            </li>
-            <li class="footer-item">
-              <router-link class="link footer-link" to="#"
+              <router-link class="link footer-link" to="/about"
                 >Kompaniya haqida</router-link
               >
             </li>

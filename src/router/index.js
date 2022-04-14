@@ -7,6 +7,7 @@ import ProfileView from "../views/ProfileView.vue";
 import UserDate from "../views/UserDate.vue";
 import UserOrder from "../views/UserOrder.vue";
 import OrderDetail from "../views/OrderDetail.vue";
+import AboutView from "../views/AboutView.vue";
 
 Vue.use(VueRouter);
 
@@ -54,6 +55,11 @@ const routes = [
         component: UserOrder,
       },
     ],
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: AboutView,
   },
 ];
 

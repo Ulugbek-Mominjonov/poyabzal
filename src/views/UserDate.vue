@@ -26,6 +26,7 @@
           label="Ism"
           outlined
           v-model="userDate.firstName"
+          append-icon="mdi-account"
         ></v-text-field>
       </v-col>
       <v-col cols="6">
@@ -33,6 +34,7 @@
           label="Yashash manzil"
           outlined
           v-model="userDate.liveAddress"
+          append-icon="mdi-home"
         ></v-text-field>
       </v-col>
       <v-col cols="6">
@@ -40,6 +42,7 @@
           label="Familiya"
           outlined
           v-model="userDate.lastName"
+          append-icon="mdi-account-outline"
         ></v-text-field>
       </v-col>
       <v-col cols="6">
@@ -47,6 +50,7 @@
           label="Ish joy manzili"
           outlined
           v-model="userDate.workAddress"
+          append-icon="mdi-city"
         ></v-text-field>
       </v-col>
 
@@ -56,6 +60,7 @@
           outlined
           v-model="userDate.username"
           readonly
+          append-icon="mdi-phone"
         ></v-text-field>
       </v-col>
     </v-row>

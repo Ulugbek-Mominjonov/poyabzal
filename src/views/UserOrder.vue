@@ -5,24 +5,26 @@
       <v-simple-table>
         <thead>
           <tr>
-            <th class="text-left text-subtitle-1 heading">№</th>
-            <th class="text-left text-subtitle-1 heading">
+            <th class="text-center text-subtitle-1 heading">№</th>
+            <th class="text-center text-subtitle-1 heading">
               Zakaz qilingan sana
             </th>
-            <th class="text-left text-subtitle-1 heading">Umumiy summa</th>
-            <th class="text-left text-subtitle-1 heading">Holati</th>
-            <th class="text-left text-subtitle-1 heading">Tavsilotlar</th>
+            <th class="text-center text-subtitle-1 heading">Umumiy summa</th>
+            <th class="text-center text-subtitle-1 heading">Holati</th>
+            <th class="text-center text-subtitle-1 heading">Tavsilotlar</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in orderList" :key="item.id">
-            <td class="text-left text-subtitle-2">{{ item.id }}</td>
-            <td class="text-left text-subtitle-2">
+            <td class="text-center text-subtitle-2">{{ item.id }}</td>
+            <td class="text-center text-subtitle-2">
               {{ format_date(item.createdAt) }}
             </td>
-            <td class="text-left text-subtitle-2">{{ item.totalPrice }}</td>
-            <td class="text-left text-subtitle-2">{{ item.status }}</td>
-            <td class="text-left text-subtitle-2">
+            <td class="text-center text-subtitle-2">{{ item.totalPrice }}</td>
+            <td class="text-center text-subtitle-2 state">
+              <span>{{ item.status }}</span>
+            </td>
+            <td class="text-center text-subtitle-2">
               <v-btn
                 color="#28235B"
                 class="text-lowerCase"
@@ -74,5 +76,14 @@ export default {
 }
 .order-table {
   box-shadow: 0px 10px 30px rgb(209 213 223 / 50%);
+}
+.state {
+  span {
+    padding: 6px 15px !important;
+    background-color: green;
+    text-align: center;
+    border-radius: 5px;
+    color: #fff;
+  }
 }
 </style>

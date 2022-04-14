@@ -364,6 +364,7 @@
           <v-list-item>
             <v-list-item-title>
               <div @click="changeTip('men')" :class="{ active: tip == 'men' }">
+                <v-icon>mdi-human-child</v-icon>
                 Erkaklar
               </div>
             </v-list-item-title>
@@ -466,7 +467,7 @@ export default {
     dialogThree: false,
     message: "",
     items: [
-      { title: "Profil", to: "/user", icon: "mdi-account" },
+      { title: "Profil", to: "/user/profile", icon: "mdi-account" },
       { title: "Korzinka", to: "/Korzinka", icon: "mdi-basket" },
     ],
     tip: null,
