@@ -708,6 +708,7 @@ export default {
   mounted() {
     if (localStorage.getItem("access_token")) {
       store.dispatch("user/UserData");
+      store.dispatch("korzinka/korzinkaList");
     }
     this.tip = localStorage.getItem("tip");
   },

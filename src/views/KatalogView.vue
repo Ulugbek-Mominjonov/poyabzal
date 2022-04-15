@@ -285,7 +285,9 @@ export default {
       store.dispatch("korzinka/addKorzinka", data).then(() => {
         this.icon = id;
         this.iconDialog = true;
-        store.dispatch("korzinka/korzinkaList");
+        setTimeout(() => {
+          store.dispatch("korzinka/korzinkaList");
+        }, 1300);
       });
     },
     redirectDetail(id) {
