@@ -62,7 +62,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="6" order-md="2" order="1" sm="6" md="4" class="mb-sm-7">
+      <v-col cols="10"  order-md="2" order="1" sm="6" md="4" class="mb-sm-7">
         <div class="content-wrapper">
           <p class="korzinka-count">
             Savatdagi Mahsulotlar soni: <br /><span>{{ getList.length }}</span>

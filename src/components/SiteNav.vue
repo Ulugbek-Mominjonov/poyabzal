@@ -290,10 +290,14 @@
               </div>
             </li>
             <li class="nav-link">
-              <router-link class="link d-flex align-center basket" to="/Korzinka">
+              <router-link
+                class="link d-flex align-center basket"
+                to="/Korzinka"
+                @click.native="openDialog"
+              >
                 <v-icon class="mr-1">mdi-basket</v-icon>
                 Korzinka
-                <span>{{getBasketCount}}</span>
+                <span>{{ getBasketCount }}</span>
               </router-link>
             </li>
           </ul>
@@ -454,6 +458,19 @@
         </router-link>
       </div>
     </v-navigation-drawer>
+
+    <!-- ALERT  -->
+    <v-dialog
+      v-model="dialogAlert"
+      scrollabl
+      max-width="500px"
+      :overlay="false"
+      transition="dialog-transition"
+    >
+      <v-alert dense border="left" type="warning">
+        Iltimos oldin ro'yhatdan o'ting!!!
+      </v-alert>
+    </v-dialog>
   </header>
 </template>
 
@@ -471,6 +488,7 @@ export default {
     languages: ["Uz", "Eng", "Ru"],
     drawer: false,
     group: null,
+    dialogAlert: false,
     sms: "",
     mask: {
       mask: "+{998}({00}) {000}-{00}-{00}",
@@ -515,14 +533,14 @@ export default {
       categoryId: "catId",
       data: "data",
     }),
-    ...mapState('korzinka', {
-      korzinkaList: "korzinkaList"
+    ...mapState("korzinka", {
+      korzinkaList: "korzinkaList",
     }),
     getBasketCount() {
-      if(this.korzinkaList) {
-        return this.korzinkaList.length
+      if (this.korzinkaList) {
+        return this.korzinkaList.length;
       }
-      return 0
+      return 0;
     },
     isUser() {
       if (localStorage.getItem("access_token")) {
@@ -611,66 +629,78 @@ export default {
     changeTip(value) {
       let search = this.search;
       localStorage.setItem("tip", value);
-      if (value != "barchasi") {
-        if (value != "new" && value != "sale") {
-          this.data.productType = value;
-          if ("isNew" in this.data) {
-            delete this.data.isNew;
-          }
-          if ("onSale" in this.data) {
-            delete this.data.onSale;
-          }
-        } else if (value == "sale") {
-          this.data.onSale = true;
-          if ("productType" in this.data) {
-            delete this.data.productType;
-          }
-          if ("isNew" in this.data) {
-            delete this.data.isNew;
+      if (!localStorage.getItem("access_token")) {
+        this.dialogAlert = true;
+      } else {
+        if (value != "barchasi") {
+          if (value != "new" && value != "sale") {
+            this.data.productType = value;
+            if ("isNew" in this.data) {
+              delete this.data.isNew;
+            }
+            if ("onSale" in this.data) {
+              delete this.data.onSale;
+            }
+          } else if (value == "sale") {
+            this.data.onSale = true;
+            if ("productType" in this.data) {
+              delete this.data.productType;
+            }
+            if ("isNew" in this.data) {
+              delete this.data.isNew;
+            }
+          } else {
+            this.data.isNew = 1;
+            if ("productType" in this.data) {
+              delete this.data.productType;
+            }
+            if ("onSale" in this.data) {
+              delete this.data.onSale;
+            }
           }
         } else {
-          this.data.isNew = 1;
           if ("productType" in this.data) {
             delete this.data.productType;
+          }
+          if ("isNew" in this.data) {
+            delete this.data.isNew;
           }
           if ("onSale" in this.data) {
             delete this.data.onSale;
           }
         }
-      } else {
-        if ("productType" in this.data) {
-          delete this.data.productType;
+        if (search) {
+          this.data.search = search;
+        } else {
+          if ("search" in this.data) {
+            delete this.data.search;
+          }
         }
-        if ("isNew" in this.data) {
-          delete this.data.isNew;
+        if ("page" in this.data) {
+          this.data.page = 1;
         }
-        if ("onSale" in this.data) {
-          delete this.data.onSale;
+        store.commit("shoes/SET_DATA", this.data);
+        if (
+          this.tip != value ||
+          this.$router.currentRoute.path != `/katalog/${value}`
+        ) {
+          this.tip = value;
+          store.dispatch("shoes/filter", this.data).then(() => {
+            this.$router.push({ name: "product", params: { name: value } });
+          });
+        } else {
+          store.dispatch("shoes/filter", this.data);
         }
-      }
-      if (search) {
-        this.data.search = search;
-      } else {
-        if ("search" in this.data) {
-          delete this.data.search;
-        }
-      }
-      if ("page" in this.data) {
-        this.data.page = 1;
-      }
-      store.commit("shoes/SET_DATA", this.data);
-      if (this.tip != value || this.$router.currentRoute.path != `/katalog/${value}`) {
-        this.tip = value;
-        store.dispatch("shoes/filter", this.data).then(() => {
-          this.$router.push({ name: "product", params: { name: value } });
-        });
-      } else {
-        store.dispatch("shoes/filter", this.data);
       }
     },
     searchPro() {
       this.changeTip("barchasi");
     },
+    openDialog() {
+      if (!localStorage.getItem("access_token")) {
+        this.dialogAlert = true
+      }
+    }
   },
   directives: {
     imask: IMaskDirective,
@@ -786,7 +816,7 @@ export default {
     font-size: 11px;
     line-height: 11px;
     border-radius: 50%;
-    background-color: #008DFF;
+    background-color: #008dff;
     color: #fff;
   }
 }

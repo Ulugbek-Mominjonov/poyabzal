@@ -4,7 +4,7 @@
       <v-col cols="12">
         <h4>Zakaz #{{ this.$route.params.id }} tavsilotlari</h4>
       </v-col>
-      <v-col cols="5" class="detail-info">
+      <v-col cols="12" md="6" lg="5" class="detail-info mb-9 mb-md-0">
         <p class="d-flex justify-space-between w-100">
           <span>Status</span>
           <span class="status">{{ orderDetail.status }}</span>
@@ -19,7 +19,7 @@
         </p>
       </v-col>
 
-      <v-col cols="5" class="detail-info">
+      <v-col cols="12" md="6" lg="5" class="detail-info">
         <p class="d-flex justify-space-between w-100">
           <span>Buyurtma</span>
           <span>{{ orderDetail.totalPrice }} summ</span>
@@ -49,13 +49,16 @@
         <h4>Mahsulotlar</h4>
       </v-col>
       <v-col
-        cols="9"
+        cols="12"
+        sm="8"
+        md="10"
+        lg="9"
         v-for="item in orderDetail.products"
         :key="item.id"
-        class="product d-flex align-center"
+        class="product d-flex flex-column flex-md-row align-md-center justify-center"
       >
-        <img :src="item.images[0]" alt="mahsulot rasmi" />
-        <div class="name-cost">
+        <img :src="item.images[0]" alt="mahsulot rasmi" class="mx-auto mb-6 mb-md-0 ml-md-0 mr-md-10" />
+        <div class="name-cost text-center text-md-left">
           <p>{{ item.name }}</p>
           <p :class="{ 'text-decoration-line-through': item.price.onSale }">
             {{ item.price.totalPrice }} summ
@@ -63,7 +66,7 @@
           <p v-if="item.price.onSale">{{ item.price.totalSalePrice }} summ</p>
         </div>
 
-        <div class="ml-auto d-flex flex-column detail-btn">
+        <div class="ml-md-auto d-flex flex-column detail-btn">
           <v-btn
             color="#008DFF"
             dark
@@ -212,7 +215,6 @@ export default {
     height: auto;
     object-fit: cover;
     border-radius: 5px;
-    margin-right: 50px;
   }
   .name-cost {
     font-size: 20px;
@@ -220,6 +222,32 @@ export default {
   }
   .order-btn {
     text-transform: inherit;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .detail-row{
+    padding: 10px;
+    h4 {
+      font-size: 24px;
+    }
+
+    p.qoldiq {
+      font-size: 18px;
+    }
+  }
+}
+@media screen and (max-width: 370px) {
+  .detail-row{
+    h4 {
+      font-size: 22px;
+    }
+    p {
+      font-size: 15px;
+    }    
+  }
+  .detail-info {
+    padding: 15px;
   }
 }
 </style>

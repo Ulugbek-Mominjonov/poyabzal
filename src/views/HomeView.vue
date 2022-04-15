@@ -6,7 +6,15 @@
         <v-col cols="12">
           <section-title content="Mashhur Oyoq kiyimlar" />
         </v-col>
-        <v-col class="furniture" cols="12" sm="6" md="4" lg="3" v-for="item in getPopularPro" :key="item.id">
+        <v-col
+          class="furniture"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+          v-for="item in getPopularPro"
+          :key="item.id"
+        >
           <div class="link furniture-link">
             <img
               class="furniture-img"
@@ -16,12 +24,20 @@
             <div class="furniture-info">
               <v-icon class="liked" @click="heart">mdi-heart</v-icon>
               <h3 class="furniture-cat">
-                <span>{{item.name}}</span>
-                <small :class="{'text-decoration-line-through': item.price.onSale}">{{item.price.price}} UZS</small>
-                <small v-if="item.price.onSale">{{item.price.salePrice}} UZS</small>
+                <span>{{ item.name }}</span>
+                <small
+                  :class="{ 'text-decoration-line-through': item.price.onSale }"
+                  >{{ item.price.price }} UZS</small
+                >
+                <small v-if="item.price.onSale"
+                  >{{ item.price.salePrice }} UZS</small
+                >
               </h3>
 
-              <router-link :to="{name: 'OrderView', params: {id: item.id}}" class="link furniture-btn"
+              <router-link
+                @click.native="openDialog"
+                :to="{ name: 'OrderView', params: { id: item.id } }"
+                class="link furniture-btn"
                 >Batafsil
                 <v-icon color="#fff" size="18">mdi-chevron-right</v-icon>
               </router-link>
@@ -113,6 +129,9 @@
                 dark
                 color="red"
                 v-model="phone"
+                v-mask="'998(##)###-##-##'"
+                placeholder="998(##)###-##-##"
+                masked="false"
               ></v-text-field>
             </v-col>
             <v-col cols="12" class="input">
@@ -181,13 +200,27 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <v-dialog
+      v-model="dialog"
+      scrollabl
+      max-width="500px"
+      :overlay="false"
+      transition="dialog-transition"
+    >
+      <v-alert dense border="left" type="warning">
+        Iltimos oldin ro'yhatdan o'ting!!!
+      </v-alert>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import HomeHero from "@/components/HomeHero.vue";
 import SectionTitle from "@/components/SectionTitle.vue";
-import EventServices from '@/services/EventServices';
+import EventServices from "@/services/EventServices";
+import axios from "axios";
+import {mask} from 'vue-the-mask'
 export default {
   components: {
     HomeHero,
@@ -207,16 +240,17 @@ export default {
       name: "",
       phone: "",
       question: "",
-      popularPro: null
+      popularPro: null,
+      dialog: false,
     };
   },
   computed: {
     getPopularPro() {
       if (this.popularPro && this.popularPro.results) {
-        return this.popularPro.results.slice(0, 8)
+        return this.popularPro.results.slice(0, 8);
       }
-      return []
-    }
+      return [];
+    },
   },
   methods: {
     heart(ev) {
@@ -224,22 +258,31 @@ export default {
     },
     SendRequest() {
       let name = this.name;
-      let phone = this.phone;
-      let question = this.question;
+      let phone_number = this.phone;
+      let message = this.question;
       let data = {
         name,
-        phone,
-        question,
+        phone_number,
+        message,
       };
-      this.dialogTwo = true;
-      console.log(data);
+      axios.post('http://89.223.122.69:8004/api/posts/question/', data)
+        .then(() => {
+          this.dialogTwo = true;
+        })
+    },
+    openDialog() {
+      console.log(1);
+      if (!localStorage.getItem("access_token")) {
+        this.dialog = true;
+      }
     },
   },
-  mounted () {
-    EventServices.getPopularPro().then(res => {
-      this.popularPro = res.data
+  directives: {mask},
+  mounted() {
+    EventServices.getPopularPro().then((res) => {
+      this.popularPro = res.data;
     });
-    localStorage.removeItem("tip")
+    localStorage.removeItem("tip");
   },
 };
 </script>
@@ -257,6 +300,7 @@ export default {
 .furniture-link {
   position: relative;
   display: block;
+  height: 100%;
 
   .furniture-img {
     max-height: 300px;
