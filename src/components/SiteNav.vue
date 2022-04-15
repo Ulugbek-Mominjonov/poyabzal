@@ -306,12 +306,43 @@
     <!-- mobile  -->
     <v-container class="d-block d-md-none">
       <v-row align="center">
-        <v-col cols="12" sm="6" class="text-center mobile">
-          <button class="register-btn d-block" @click="dialog = true">
+        <v-col cols="4" class="text-center mobile">
+          <button
+            class="register-btn d-block"
+            @click="dialog = true"
+            v-if="!isUser"
+          >
             <span>Ro'yhatdan o'tish</span>
           </button>
+          <v-menu offset-y v-if="isUser">
+            <template v-slot:activator="{ on: menu, attrs }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on: tooltip }">
+                  <v-btn
+                    color="#28235b"
+                    dark
+                    v-bind="attrs"
+                    v-on="{ ...tooltip, ...menu }"
+                  >
+                    <v-icon>mdi-account</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ userData.firstName }} {{ userData.lastName }}</span>
+              </v-tooltip>
+            </template>
+            <v-list>
+              <v-list-item v-for="(item, index) in items" :key="index">
+                <v-list-item-title>
+                  <router-link :to="item.to" class="link nav-link">
+                    <v-icon class="nav-icon">{{ item.icon }}</v-icon>
+                    {{ item.title }}
+                  </router-link>
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-col>
-        <v-col cols="12" sm="6" class="text-center mobile">
+        <v-col cols="8" class="text-center mobile">
           <button class="register-btn d-block" @click.stop="drawer = !drawer">
             <v-icon class="mr-5">mdi-menu</v-icon>
             <span>Menu</span>

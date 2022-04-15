@@ -21,7 +21,7 @@
     </div>
 
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" sm="6">
         <v-text-field
           label="Ism"
           outlined
@@ -29,7 +29,7 @@
           append-icon="mdi-account"
         ></v-text-field>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="12" sm="6">
         <v-text-field
           label="Yashash manzil"
           outlined
@@ -37,7 +37,7 @@
           append-icon="mdi-home"
         ></v-text-field>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="12" sm="6">
         <v-text-field
           label="Familiya"
           outlined
@@ -45,7 +45,7 @@
           append-icon="mdi-account-outline"
         ></v-text-field>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="12" sm="6">
         <v-text-field
           label="Ish joy manzili"
           outlined
@@ -54,7 +54,7 @@
         ></v-text-field>
       </v-col>
 
-      <v-col cols="6">
+      <v-col cols="12" sm="6">
         <v-text-field
           label="Telefon nomer"
           outlined
@@ -166,5 +166,30 @@ export default {
     object-fit: cover;
     object-position: center;
   }
+}
+@media screen and (max-width: 1920px) {
+  .img {
+  width: 60%;
+}
+}
+@media screen and (max-width: 800px) {
+  .img {
+  width: 80%;
+}
+}
+@media screen and (max-width: 650px) {
+  .img {
+  width: 100%;
+}
+}
+@media screen and (max-width: 510px) {
+  .img {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  img, .user-icon {
+    margin-bottom: 25px;
+  }
+}
 }
 </style>
