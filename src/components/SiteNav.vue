@@ -290,9 +290,10 @@
               </div>
             </li>
             <li class="nav-link">
-              <router-link class="link d-flex align-center" to="/Korzinka">
-                <v-icon class="mr-1">mdi-basket-plus</v-icon>
+              <router-link class="link d-flex align-center basket" to="/Korzinka">
+                <v-icon class="mr-1">mdi-basket</v-icon>
                 Korzinka
+                <span>{{getBasketCount}}</span>
               </router-link>
             </li>
           </ul>
@@ -514,6 +515,15 @@ export default {
       categoryId: "catId",
       data: "data",
     }),
+    ...mapState('korzinka', {
+      korzinkaList: "korzinkaList"
+    }),
+    getBasketCount() {
+      if(this.korzinkaList) {
+        return this.korzinkaList.length
+      }
+      return 0
+    },
     isUser() {
       if (localStorage.getItem("access_token")) {
         return true;
@@ -649,7 +659,7 @@ export default {
         this.data.page = 1;
       }
       store.commit("shoes/SET_DATA", this.data);
-      if (this.tip != value) {
+      if (this.tip != value || this.$router.currentRoute.path != `/katalog/${value}`) {
         this.tip = value;
         store.dispatch("shoes/filter", this.data).then(() => {
           this.$router.push({ name: "product", params: { name: value } });
@@ -766,7 +776,20 @@ export default {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
-
+.basket {
+  position: relative;
+  span {
+    position: absolute;
+    top: 5px;
+    left: -12px;
+    padding: 2px 4px;
+    font-size: 11px;
+    line-height: 11px;
+    border-radius: 50%;
+    background-color: #008DFF;
+    color: #fff;
+  }
+}
 /* -------------------------------------------------------------------------- */
 /*                                  site nav                                  */
 /* -------------------------------------------------------------------------- */
