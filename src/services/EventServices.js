@@ -112,6 +112,5 @@ export default {
     return instance.get("/api/shop/product/",{
       params: data
     })
-  }
-
+  },
 };

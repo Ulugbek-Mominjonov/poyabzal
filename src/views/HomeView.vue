@@ -80,7 +80,7 @@
     <v-container class="our-friends mb-15">
       <v-row class="friends-row">
         <v-col cols="12">
-          <section-title content="Tanlashda yordam beramiz" />
+          <section-title content="Bizning hamkorlar" />
         </v-col>
         <v-col class="friend" cols="12">
           <v-sheet class="mx-auto" elevation="8" max-width="auto">
@@ -186,17 +186,17 @@
           />
         </v-col>
         <v-col class="faq-question" cols="8">
-          <v-expansion-panels>
-            <v-expansion-panel v-for="(item, i) in 5" :key="i" class="mb-3">
-              <v-expansion-panel-header> Item </v-expansion-panel-header>
+          <v-expansion-panels v-if="posts">
+            <v-expansion-panel v-for="(item, i) in posts" :key="i" class="mb-3">
+              <v-expansion-panel-header> {{item.question}} </v-expansion-panel-header>
               <v-expansion-panel-content>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
+                {{item.answer}}
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
+          <v-alert type="info" v-else>
+            Hali hech qanday savollar yo'q!!!
+          </v-alert>
         </v-col>
       </v-row>
     </v-container>
@@ -242,6 +242,7 @@ export default {
       question: "",
       popularPro: null,
       dialog: false,
+      posts: null
     };
   },
   computed: {
@@ -283,6 +284,9 @@ export default {
       this.popularPro = res.data;
     });
     localStorage.removeItem("tip");
+    axios.get("http://89.223.122.69:8004/api/posts/faq/").then(res => {
+      this.posts = res.data
+    })
   },
 };
 </script>

@@ -350,6 +350,9 @@ export default {
       setTimeout(() => (this.iconDialog = false), 1000);
     },
   },
+  beforeDestroy() {
+    localStorage.removeItem("tip")
+  }
 };
 </script>
 
