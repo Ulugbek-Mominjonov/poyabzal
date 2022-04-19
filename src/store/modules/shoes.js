@@ -8,7 +8,8 @@ export const state = {
   catId: 0,
   productDetail: {},
   sale: 0,
-  data: {}
+  data: {},
+  tip: null
 };
 export const mutations = {
   SET_CAT(state, payload) {
@@ -29,6 +30,9 @@ export const mutations = {
   SET_DATA(state, data) {
     state.data = data
     console.log(data);
+  },
+  SET_TIP(state, value) {
+    state.tip = value
   }
 };
 export const actions = {

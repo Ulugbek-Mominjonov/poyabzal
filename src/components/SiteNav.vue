@@ -4,7 +4,7 @@
     <v-container>
       <v-row align="center" justify="space-between" class="site-nav-wrapper">
         <v-col cols="4" lg="2" order="first" class="logo-wrapper">
-          <router-link to="/" class="link">
+          <router-link @click.native="deleteTip()" to="/" class="link">
             <img src="../assets/logo.png" alt="Bu yerda logo rasmi" />
           </router-link>
         </v-col>
@@ -264,6 +264,14 @@
               </div>
             </li>
             <li class="nav-link">
+              <div
+                @click="changeTip('sale')"
+                :class="{ active: tip == 'sale' }"
+              >
+                Aksiya
+              </div>
+            </li>
+            <li class="nav-link">
               <div @click="changeTip('men')" :class="{ active: tip == 'men' }">
                 Erkaklar
               </div>
@@ -282,18 +290,11 @@
               </div>
             </li>
             <li class="nav-link">
-              <div
-                @click="changeTip('sale')"
-                :class="{ active: tip == 'sale' }"
-              >
-                Aksiya
-              </div>
-            </li>
-            <li class="nav-link">
               <router-link
                 class="link d-flex align-center basket"
                 to="/Korzinka"
                 @click.native="openDialog"
+                :class="{ active: tip == 'korzinka' }"
               >
                 <v-icon class="mr-1">mdi-basket</v-icon>
                 Korzinka
@@ -400,7 +401,6 @@
           <v-list-item>
             <v-list-item-title>
               <div @click="changeTip('men')" :class="{ active: tip == 'men' }">
-                <v-icon>mdi-human-child</v-icon>
                 Erkaklar
               </div>
             </v-list-item-title>
@@ -520,7 +520,6 @@ export default {
       { title: "Profil", to: "/user/profile", icon: "mdi-account" },
       { title: "Korzinka", to: "/Korzinka", icon: "mdi-basket" },
     ],
-    tip: null,
   }),
   computed: {
     ...mapState("auth", {
@@ -532,6 +531,7 @@ export default {
     ...mapState("shoes", {
       categoryId: "catId",
       data: "data",
+      tip: "tip",
     }),
     ...mapState("korzinka", {
       korzinkaList: "korzinkaList",
@@ -628,6 +628,7 @@ export default {
     },
     changeTip(value) {
       let search = this.search;
+      store.commit("shoes/SET_TIP", value);
       localStorage.setItem("tip", value);
       if (!localStorage.getItem("access_token")) {
         this.dialogAlert = true;
@@ -684,7 +685,6 @@ export default {
           this.tip != value ||
           this.$router.currentRoute.path != `/katalog/${value}`
         ) {
-          this.tip = value;
           store.dispatch("shoes/filter", this.data).then(() => {
             this.$router.push({ name: "product", params: { name: value } });
           });
@@ -696,11 +696,17 @@ export default {
     searchPro() {
       this.changeTip("barchasi");
     },
+    deleteTip() {
+      store.commit("shoes/SET_TIP", null);
+      localStorage.removeItem("tip");
+    },
     openDialog() {
       if (!localStorage.getItem("access_token")) {
-        this.dialogAlert = true
+        this.dialogAlert = true;
       }
-    }
+      this.deleteTip();
+      store.commit("shoes/SET_TIP", 'korzinka');
+    },
   },
   directives: {
     imask: IMaskDirective,
@@ -709,8 +715,8 @@ export default {
     if (localStorage.getItem("access_token")) {
       store.dispatch("user/UserData");
       store.dispatch("korzinka/korzinkaList");
+      store.commit("shoes/SET_TIP", localStorage.getItem("tip"));
     }
-    this.tip = localStorage.getItem("tip");
   },
 };
 </script>

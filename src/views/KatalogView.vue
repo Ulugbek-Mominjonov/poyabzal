@@ -37,7 +37,7 @@
 
         <!-- katalog content  -->
         <v-col class="katalog-content" cols="12" sm="9" md="10">
-          <v-row class="content-row">
+          <v-row class="content-row" justify="center">
             <!-- content path  -->
             <v-col class="content-path" cols="12">
               <p class="content-name">Barcha bo'limlar</p>
@@ -72,6 +72,7 @@
               sm="6"
               md="4"
               lg="3"
+              v-show="getShoes && getShoes.length > 0"
               v-for="(item, index) in getShoes"
               :key="index"
               align-self="stretch"
@@ -135,6 +136,17 @@
                 >
               </div>
             </v-col>
+
+            <v-col class="shoes mt-7" cols="8" sm="6" lg="3" v-if="getShoes.length == 0">
+              <div class="smile-card">
+                <img class="mb-3 smile-img" src="../assets/smile.webp" />
+              </div>
+            </v-col>
+
+            <v-col class="shoes mt-7" cols="8" v-if="!getShoes">
+              <v-alert type="info"> Ma'lumotlar yuklanmoqda </v-alert>
+            </v-col>
+
             <v-col cols="12" class="ml-auto" v-if="pageCount > 1">
               <v-pagination
                 v-model="data.page"
@@ -209,13 +221,10 @@ export default {
       data: "data",
     }),
     getShoes() {
-      if (this.productList) {
-        if (this.onSale == 1) {
-          return this.productList.results.filter((item) => item.price.onSale);
-        }
+      if (this.productList && this.productList.results) {
         return this.productList.results;
       }
-      return [];
+      return null;
     },
     pageCount() {
       if (this.productList) {
@@ -234,6 +243,9 @@ export default {
           delete this.data.category;
         }
       }
+      if ("page" in this.data) {
+        this.data.page = 1;
+      }
       store.commit("shoes/SET_DATA", this.data);
       store.dispatch("shoes/filter", this.data);
     },
@@ -246,6 +258,8 @@ export default {
       store.dispatch("korzinka/addKorzinka", data).then(() => {
         this.icon = id;
         this.$router.push("/Korzinka");
+        store.commit("shoes/SET_TIP", null);
+        localStorage.removeItem("tip");
       });
     },
     changePage(value) {
@@ -351,8 +365,8 @@ export default {
     },
   },
   beforeDestroy() {
-    localStorage.removeItem("tip")
-  }
+    localStorage.removeItem("tip");
+  },
 };
 </script>
 
@@ -467,7 +481,7 @@ export default {
   .shoes-info {
     margin-top: 0;
     margin-bottom: 12px;
-    font-weight: 400;
+    font-weight: 600;
     font-size: 15px;
     line-height: 17px;
     cursor: pointer;
@@ -485,7 +499,7 @@ export default {
   .cost-basket {
     margin-bottom: 10px;
     span {
-      font-weight: 400;
+      font-weight: 500;
       font-size: 15px;
       line-height: 17px;
     }
@@ -507,6 +521,17 @@ export default {
     color: red !important;
   }
 }
+.smile-card {
+    background-color: transparent;
+  }
+  .smile-img {
+    width: 100%;
+    display: block;
+    object-fit: contain;
+  }
+  .smile-info {
+    font-size: 22px;
+  }
 @media screen and (max-width: 816px) {
   .content-path {
     margin-bottom: 40px;
