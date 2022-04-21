@@ -85,6 +85,7 @@
                   @click="redirectDetail(item.id)"
                 />
                 <span class="aksiya" v-if="item.price.onSale">Aksiya</span>
+                <smal class="news" v-if="item.isNew">Yangi</smal>
                 <p
                   class="my-5 mt-auto shoes-info"
                   @click="redirectDetail(item.id)"
@@ -137,7 +138,13 @@
               </div>
             </v-col>
 
-            <v-col class="shoes mt-7" cols="8" sm="6" lg="3" v-if="getShoes.length == 0">
+            <v-col
+              class="shoes mt-7"
+              cols="8"
+              sm="6"
+              lg="3"
+              v-if="getShoes.length == 0"
+            >
               <div class="smile-card">
                 <img class="mb-3 smile-img" src="../assets/smile.webp" />
               </div>
@@ -172,6 +179,17 @@
           </v-card-text>
         </v-card>
       </v-dialog>
+      <v-dialog
+        v-model="dialogAlert"
+        scrollabl
+        max-width="500px"
+        :overlay="false"
+        transition="dialog-transition"
+      >
+        <v-alert dense border="left" type="warning">
+          Iltimos oldin ro'yhatdan o'ting!!!
+        </v-alert>
+      </v-dialog>
     </v-container>
   </div>
 </template>
@@ -196,11 +214,11 @@ export default {
       },
       indicator: false,
       items3: [
-        "Narx bo'yicha",
+        "Avval arzonlari",
+        "Avval qimmatlari",
         "Yangilar",
-        "Eskilar",
-        "Ko'p ko'rilganlar(-)",
-        "Ko'p ko'rilganlar(+)",
+        "Avval ko'p ko'rilganlari",
+        "Avval kam ko'rilganlari",
       ],
       pathName: "Barcha bo'limlar",
       page: 1,
@@ -210,6 +228,7 @@ export default {
       icon: null,
       iconDialog: false,
       name: "",
+      dialogAlert: false,
     };
   },
   computed: {
@@ -255,12 +274,16 @@ export default {
         product: id,
         quantity: 1,
       };
-      store.dispatch("korzinka/addKorzinka", data).then(() => {
-        this.icon = id;
-        this.$router.push("/Korzinka");
-        store.commit("shoes/SET_TIP", null);
-        localStorage.removeItem("tip");
-      });
+      if (!localStorage.getItem("access_token")) {
+        this.dialogAlert = true;
+      } else {
+        store.dispatch("korzinka/addKorzinka", data).then(() => {
+          this.icon = id;
+          this.$router.push("/Korzinka");
+          store.commit("shoes/SET_TIP", null);
+          localStorage.removeItem("tip");
+        });
+      }
     },
     changePage(value) {
       this.data.page = value;
@@ -270,20 +293,20 @@ export default {
     sort(value) {
       let order;
       switch (value) {
-        case "Narx bo'yicha":
+        case "Avval arzonlari":
           order = "price";
           break;
         case "Yangilar":
-          order = "is_new";
-          break;
-        case "Eskilar":
           order = "-is_new";
           break;
-        case "Ko'p ko'rilganlar(-)":
-          order = "views";
+        case "Avval qimmatlari":
+          order = "-price";
           break;
-        case "Ko'p ko'rilganlar(+)":
+        case "Avval ko'p ko'rilganlari":
           order = "-views";
+          break
+        case "Avval kam ko'rilganlari":
+          order = "views";
           break;
       }
       this.data.ordering = order;
@@ -296,13 +319,17 @@ export default {
         product: id,
         quantity: 1,
       };
-      store.dispatch("korzinka/addKorzinka", data).then(() => {
-        this.icon = id;
-        this.iconDialog = true;
-        setTimeout(() => {
-          store.dispatch("korzinka/korzinkaList");
-        }, 1300);
-      });
+      if (!localStorage.getItem("access_token")) {
+        this.dialogAlert = true;
+      } else {
+        store.dispatch("korzinka/addKorzinka", data).then(() => {
+          this.icon = id;
+          this.iconDialog = true;
+          setTimeout(() => {
+            store.dispatch("korzinka/korzinkaList");
+          }, 1300);
+        });
+      }
     },
     redirectDetail(id) {
       this.$router.push({
@@ -446,7 +473,7 @@ export default {
   border-radius: 10px;
   color: #28235b;
   background-color: #fff;
-  .aksiya {
+  .aksiya, .news {
     position: absolute;
     top: 10px;
     right: 0;
@@ -457,6 +484,14 @@ export default {
     color: #000000;
     background: #efd80a;
     border-radius: 5px;
+  }
+  .news {
+    width: 20%;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    background: #b1a00b;
+    text-align: center;
   }
   .shoes-img {
     display: block;
@@ -522,16 +557,16 @@ export default {
   }
 }
 .smile-card {
-    background-color: transparent;
-  }
-  .smile-img {
-    width: 100%;
-    display: block;
-    object-fit: contain;
-  }
-  .smile-info {
-    font-size: 22px;
-  }
+  background-color: transparent;
+}
+.smile-img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
+.smile-info {
+  font-size: 22px;
+}
 @media screen and (max-width: 816px) {
   .content-path {
     margin-bottom: 40px;

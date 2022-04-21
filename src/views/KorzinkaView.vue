@@ -62,7 +62,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="10"  order-md="2" order="1" sm="6" md="4" class="mb-sm-7">
+      <v-col cols="10" order-md="2" order="1" sm="6" md="4" class="mb-sm-7">
         <div class="content-wrapper">
           <p class="korzinka-count">
             Savatdagi Mahsulotlar soni: <br /><span>{{ getList.length }}</span>
@@ -102,13 +102,18 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="warning" text @click="dialog = false"
-              >Bekor qilish</v-btn
-            >
-            <v-btn color="success" text @click="orderSuccess"
-              >Buyurtma berish</v-btn
-            >
+            <div class="d-flex flex-column flex-md-row justify-center justify-md-space-between align-center">
+              <v-btn color="warning" text @click="dialog = false"
+                >Bekor qilish</v-btn
+              >
+              <v-btn
+                color="success"
+                class="d-block d-md-inline-block"
+                text
+                @click="orderSuccess"
+                >Buyurtma berish</v-btn
+              >
+            </div>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -125,7 +130,7 @@ export default {
     return {
       count: 16,
       dialog: false,
-      comment: ""
+      comment: "",
     };
   },
   computed: {
@@ -205,22 +210,28 @@ export default {
       let latitude = this.userDate.latitude;
       let longitude = this.userDate.longitude;
       let address = this.userDate.liveAddress;
-      let comment = this.comment
+      let comment = this.comment;
       let data = {
         latitude,
         longitude,
         address,
-        comment
+        comment,
       };
       EventService.orderCreate(data).then(() => {
         store.dispatch("korzinka/korzinkaList");
-        this.dialog = false
-      })
+        this.dialog = false;
+      });
     },
   },
   mounted() {
-    store.dispatch("korzinka/korzinkaList");
-    localStorage.removeItem("tip")
+    localStorage.removeItem("tip");
+  },
+  beforeRouteEnter(to, from, next) {
+    store.dispatch("korzinka/korzinkaList").then(() => {
+      setTimeout(() => {
+        next();
+      }, 1000);
+    });
   },
 };
 </script>

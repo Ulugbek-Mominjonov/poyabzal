@@ -6,12 +6,7 @@
       <img :src="userDate.image" alt="User img" v-if="userDate.image" />
       <v-icon v-else class="user-icon" size="200">mdi-account-box</v-icon>
       <div class="d-flex flex-column">
-        <input
-          ref="file"
-          type="file"
-          @change="uploadImage"
-          hidden
-        />
+        <input ref="file" type="file" @change="uploadImage" hidden />
         <v-btn class="user-btn" color="primary" @click="selectFile()"
           >Rasm Qo'shish</v-btn
         >
@@ -63,23 +58,34 @@
           append-icon="mdi-phone"
         ></v-text-field>
       </v-col>
+
+      <v-col cols="12">
+        <label>Joylashuvingiz!</label>
+        <yandex-map :coords="coords" :zoom="10" @click="onClick">
+          <ymap-marker
+            :coords="coords"
+            marker-id="123"
+            hint-content="some hint"
+          />
+        </yandex-map>
+      </v-col>
     </v-row>
-    <v-btn color="success" class="py-6" @click="saveChanges"
+    <v-btn color="success" class="py-6 mt-6" @click="saveChanges"
       >O'zgarishlarni saqlash</v-btn
     >
 
     <v-dialog v-model="iconDialog" hide-overlay persistent width="300">
-        <v-card color="primary" dark class="pt-3">
-          <v-card-text>
-            {{message}}
-            <v-progress-linear
-              indeterminate
-              color="white"
-              class="mb-0"
-            ></v-progress-linear>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+      <v-card color="primary" dark class="pt-3">
+        <v-card-text>
+          {{ message }}
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -91,22 +97,36 @@ export default {
     return {
       images: "",
       message: "",
-      iconDialog: false
-    }
+      iconDialog: false,
+      coords: [40.458608, 71.214037],
+    };
   },
   computed: {
     ...mapState("user", {
       userDate: "user",
     }),
   },
+  mounted() {
+    if(this.userDate.latitude && this.userDate.longitude) {
+      this.coords[0] = this.userDate.latitude
+      this.coords[1] = this.userDate.longitude
+    }
+  },
   methods: {
+    onClick(e) {
+      this.coords = e.get("coords");
+    },
+    setCords() {
+      this.coords.push(this.userDate.latitude)
+      this.coords.push(this.userDate.longitude)
+    },
     selectFile() {
       let fileInputElement = this.$refs.file;
       fileInputElement.click();
     },
     uploadImage(event) {
       const image = event.target.files[0];
-      this.images = image
+      this.images = image;
       const reader = new FileReader();
       reader.readAsDataURL(image);
       reader.onload = (event) => {
@@ -115,8 +135,8 @@ export default {
       console.log(this.userDate.image);
     },
     deleteImage() {
-      this.userDate.image = ""
-      this.images = ""
+      this.userDate.image = "";
+      this.images = "";
     },
     saveChanges() {
       let data = new FormData();
@@ -129,12 +149,14 @@ export default {
       data.append("image", image);
       data.append("live_address", myData.liveAddress);
       data.append("work_address", myData.workAddress);
+      data.append("latitude", this.coords[0]);
+      data.append("longitude", this.coords[1]);
       console.log(data);
       store.dispatch("user/updateDate", data).then(() => {
         this.message = "Ma'lumotlar o'zgartirildi. Rahmat";
-        this.iconDialog = true
+        this.iconDialog = true;
       });
-    }
+    },
   },
   watch: {
     iconDialog(val) {
@@ -154,6 +176,9 @@ export default {
 .font-bold {
   font-weight: bold;
 }
+.ymap-container {
+  height: 350px;
+}
 .img {
   display: flex;
   width: 45%;
@@ -169,27 +194,28 @@ export default {
 }
 @media screen and (max-width: 1920px) {
   .img {
-  width: 60%;
-}
+    width: 60%;
+  }
 }
 @media screen and (max-width: 800px) {
   .img {
-  width: 80%;
-}
+    width: 80%;
+  }
 }
 @media screen and (max-width: 650px) {
   .img {
-  width: 100%;
-}
+    width: 100%;
+  }
 }
 @media screen and (max-width: 510px) {
   .img {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  img, .user-icon {
-    margin-bottom: 25px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    img,
+    .user-icon {
+      margin-bottom: 25px;
+    }
   }
-}
 }
 </style>

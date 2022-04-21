@@ -38,6 +38,9 @@
             <router-link to="#" class="link">
               <v-icon color="#28235B">mdi-whatsapp</v-icon>
             </router-link>
+            <router-link to="#" class="link">
+              <v-icon color="#28235B">mdi-send</v-icon>
+            </router-link>
           </div>
         </v-col>
         <v-col
@@ -212,9 +215,13 @@
                 ></v-file-input>
               </v-col>
               <v-col cols="12" class="pt-0">
-                <v-btn color="#28235B" dark @click="getLocation"
-                  ><v-icon>mdi-map-marker</v-icon>Geo Joylashuv</v-btn
-                >
+                <yandex-map :coords="coords" :zoom="10" @click="onClick">
+                  <ymap-marker
+                    :coords="coords"
+                    marker-id="123"
+                    hint-content="some hint"
+                  />
+                </yandex-map>
               </v-col>
             </v-row>
           </v-container>
@@ -474,18 +481,45 @@
   </header>
 </template>
 
+<i18n>
+{
+  "uz": {
+    "siteNav": [
+      'Barchasi',
+      'Yangilar',
+      'Aksiya',
+      'Erkaklar',
+      'Ayollar',
+      'Bolalar',
+      'Korzinka'
+    ]
+  },
+  "ru": {
+    "siteNav": [
+      'Все',
+      'Новый',
+      'Действие',
+      'Мужчины',
+      'Женщины',
+      'Дети',
+      'Корзина'
+    ]
+  }
+}
+</i18n>
+
 <script>
 import store from "@/store/index";
 import { mapState } from "vuex";
 import { IMaskDirective } from "vue-imask";
 export default {
   name: "SiteNav",
-
   data: () => ({
+    coords: [40.458608, 71.214037],
+    currentPlace: null,
     search: null,
     dialog: false,
-    language: "Uz",
-    languages: ["Uz", "Eng", "Ru"],
+    languages: ["uz", "ru"],
     drawer: false,
     group: null,
     dialogAlert: false,
@@ -550,6 +584,14 @@ export default {
     },
   },
   methods: {
+    onClick(e) {
+      this.coords = e.get("coords");
+      this.kabinet.latitude = this.coords[0]
+      this.kabinet.longitude = this.coords[1]
+    },
+    language(val) {
+      this.$$i18n.locale = val;
+    },
     foo(event) {
       console.log(event);
     },
@@ -591,22 +633,6 @@ export default {
         }
       });
     },
-    getLocation() {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log(position.coords.latitude);
-          console.log(position.coords.longitude);
-          this.kabinet.latitude = position.coords.latitude;
-          this.kabinet.longitude = position.coords.longitude;
-          console.log(position.coords.altitudeAccuracy);
-          this.message = "Joylashuvingiz aniqlandi!";
-          this.dialogThree = true;
-        },
-        (error) => {
-          console.log(error.message);
-        }
-      );
-    },
     setKabinet() {
       let data = new FormData();
       let myData = this.kabinet;
@@ -623,74 +649,72 @@ export default {
         this.message = "Ma'lumotlar qabul qilindi. Rahmat";
         this.dialogThree = true;
         this.dialogTwo = false;
-        location.reload();
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
       });
     },
     changeTip(value) {
       let search = this.search;
       store.commit("shoes/SET_TIP", value);
       localStorage.setItem("tip", value);
-      if (!localStorage.getItem("access_token")) {
-        this.dialogAlert = true;
-      } else {
-        if (value != "barchasi") {
-          if (value != "new" && value != "sale") {
-            this.data.productType = value;
-            if ("isNew" in this.data) {
-              delete this.data.isNew;
-            }
-            if ("onSale" in this.data) {
-              delete this.data.onSale;
-            }
-          } else if (value == "sale") {
-            this.data.onSale = true;
-            if ("productType" in this.data) {
-              delete this.data.productType;
-            }
-            if ("isNew" in this.data) {
-              delete this.data.isNew;
-            }
-          } else {
-            this.data.isNew = 1;
-            if ("productType" in this.data) {
-              delete this.data.productType;
-            }
-            if ("onSale" in this.data) {
-              delete this.data.onSale;
-            }
-          }
-        } else {
-          if ("productType" in this.data) {
-            delete this.data.productType;
-          }
+      if (value != "barchasi") {
+        if (value != "new" && value != "sale") {
+          this.data.productType = value;
           if ("isNew" in this.data) {
             delete this.data.isNew;
           }
           if ("onSale" in this.data) {
             delete this.data.onSale;
           }
-        }
-        if (search) {
-          this.data.search = search;
+        } else if (value == "sale") {
+          this.data.onSale = true;
+          if ("productType" in this.data) {
+            delete this.data.productType;
+          }
+          if ("isNew" in this.data) {
+            delete this.data.isNew;
+          }
         } else {
-          if ("search" in this.data) {
-            delete this.data.search;
+          this.data.isNew = 1;
+          if ("productType" in this.data) {
+            delete this.data.productType;
+          }
+          if ("onSale" in this.data) {
+            delete this.data.onSale;
           }
         }
-        if ("page" in this.data) {
-          this.data.page = 1;
+      } else {
+        if ("productType" in this.data) {
+          delete this.data.productType;
         }
-        store.commit("shoes/SET_DATA", this.data);
-        if (
-          this.tip != value ||
-          this.$router.currentRoute.path != `/katalog/${value}`
-        ) {
-          store.dispatch("shoes/filter", this.data).then(() => {
-            this.$router.push({ name: "product", params: { name: value } });
-          });
-        } else {
-          store.dispatch("shoes/filter", this.data);
+        if ("isNew" in this.data) {
+          delete this.data.isNew;
         }
+        if ("onSale" in this.data) {
+          delete this.data.onSale;
+        }
+      }
+      if (search) {
+        this.data.search = search;
+      } else {
+        if ("search" in this.data) {
+          delete this.data.search;
+        }
+      }
+      if ("page" in this.data) {
+        this.data.page = 1;
+      }
+      store.commit("shoes/SET_DATA", this.data);
+      if (
+        this.tip != value ||
+        this.$router.currentRoute.path != `/katalog/${value}`
+      ) {
+        store.dispatch("shoes/filter", this.data).then(() => {
+          this.$router.push({ name: "product", params: { name: value } });
+        });
+      } else {
+        store.dispatch("shoes/filter", this.data);
       }
     },
     searchPro() {
@@ -705,7 +729,7 @@ export default {
         this.dialogAlert = true;
       }
       this.deleteTip();
-      store.commit("shoes/SET_TIP", 'korzinka');
+      store.commit("shoes/SET_TIP", "korzinka");
     },
   },
   directives: {
@@ -745,6 +769,9 @@ export default {
     cursor: pointer;
     font-size: 24px;
   }
+}
+.ymap-container {
+  height: 350px;
 }
 .email-date {
   p {
