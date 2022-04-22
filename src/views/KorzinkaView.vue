@@ -9,14 +9,14 @@
           class="pro-row pr-5"
         >
           <v-col cols="4" sm="2" class="pro-img">
-            <img :src="item.productDetail.images[0]" alt="Mahsulot rasmi" />
+            <img :src="item.productDetail.images[0]" alt="Mahsulot rasmi" @click="changeRouter(item.productDetail.id)"/>
           </v-col>
           <v-col
             cols="8"
             md="10"
             class="d-flex align-center justify-space-between pro-info"
           >
-            <h3 class="pro-name">{{ item.productDetail.name }}</h3>
+            <h3 class="pro-name" @click="changeRouter(item.productDetail.id)">{{ item.productDetail.name }}</h3>
             <div class="d-flex align-stretch btn-group">
               <v-btn
                 color="#28235B"
@@ -174,7 +174,7 @@ export default {
       EventService.addProduct(data);
     },
     addPro(id, index) {
-      this.korzinkaList[index].quantity += 1;
+      this.korzinkaList[index].quantity = parseInt(this.korzinkaList[index].quantity) + 1;
       let count = this.korzinkaList[index].quantity;
       let data = {
         product: id,
@@ -222,6 +222,12 @@ export default {
         this.dialog = false;
       });
     },
+    changeRouter(id) {
+      this.$router.push({
+        name: "OrderView",
+        params: { id: id },
+      });
+    }
   },
   mounted() {
     localStorage.removeItem("tip");
@@ -252,6 +258,7 @@ export default {
   margin-bottom: 30px;
 }
 .pro-img {
+  cursor: pointer;
   img {
     width: 100%;
     max-height: 130px;
@@ -260,6 +267,11 @@ export default {
 }
 .pro-name {
   width: 35%;
+  cursor: pointer;
+  transition: color .3s;
+  &:hover {
+    color: red;
+  }
 }
 .pro-input {
   width: 80px;

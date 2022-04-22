@@ -205,6 +205,18 @@
           </v-card-text>
         </v-card>
       </v-dialog>
+
+      <v-dialog
+        v-model="dialogAlert"
+        scrollabl
+        max-width="500px"
+        :overlay="false"
+        transition="dialog-transition"
+      >
+        <v-alert dense border="left" type="warning">
+          Iltimos oldin ro'yhatdan o'ting!!!
+        </v-alert>
+      </v-dialog>
   </v-container>
 </template>
 
@@ -246,7 +258,8 @@ export default {
       ],
       name: "",
       count: 1,
-      iconDialog: false
+      iconDialog: false,
+      dialogAlert: false
     };
   },
   computed: {
@@ -294,8 +307,12 @@ export default {
       }
     },
     addComment(name) {
-      this.dialogMessage = name;
-      this.dialog = true;
+      if (!localStorage.getItem("access_token")) {
+        this.dialogAlert = true;
+      } else {
+        this.dialogMessage = name;
+        this.dialog = true;
+      }
     },
     validate() {
       this.$refs.form.validate();
@@ -324,9 +341,16 @@ export default {
         product: id,
         quantity: count,
       };
-      store.dispatch("korzinka/addKorzinka", data).then(() => {
-        this.iconDialog = true;
-      });
+      if (!localStorage.getItem("access_token")) {
+        this.dialogAlert = true;
+      } else {
+        store.dispatch("korzinka/addKorzinka", data).then(() => {
+          this.iconDialog = true;
+          setTimeout(() => {
+            store.dispatch("korzinka/korzinkaList");
+          }, 1200);
+        });
+      }
     },
     setOrder(id) {
       let count = this.count
@@ -334,9 +358,15 @@ export default {
         product: id,
         quantity: count,
       };
-      store.dispatch("korzinka/addKorzinka", data).then(() => {
-        this.$router.push("/Korzinka");
-      });
+      if (!localStorage.getItem("access_token")) {
+        this.dialogAlert = true;
+      } else {
+        store.dispatch("korzinka/addKorzinka", data).then(() => {
+          setTimeout(() => {
+            this.$router.push("/Korzinka");
+          }, 1000);
+        });
+      }
     },
   },
   mounted() {

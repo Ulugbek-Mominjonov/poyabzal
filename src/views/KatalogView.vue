@@ -279,9 +279,11 @@ export default {
       } else {
         store.dispatch("korzinka/addKorzinka", data).then(() => {
           this.icon = id;
-          this.$router.push("/Korzinka");
           store.commit("shoes/SET_TIP", null);
           localStorage.removeItem("tip");
+          setTimeout(() => {
+            this.$router.push("/Korzinka");
+          }, 600);
         });
       }
     },

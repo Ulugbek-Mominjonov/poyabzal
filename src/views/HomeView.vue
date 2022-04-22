@@ -76,6 +76,105 @@
       </v-row>
     </v-container>
 
+    <!-- work with our  -->
+    <v-container class="our-services">
+      <v-row class="our-services-row">
+        <v-col cols="12" class="our-services-col">
+          <section-title content="Biz bilan ishlash oson" />
+        </v-col>
+        <v-col cols="12" class="our-services-col">
+          <h3 class="text-center heading">Biz bilan qanday ishlanadi?</h3>
+        </v-col>
+        <v-col cols="6" sm="4" md="3" lg="2">
+          <div class="using-icon-wrapper">
+            <img
+              class="using-icon mx-auto"
+              src="../assets/user.png"
+              alt="User image"
+            />
+          </div>
+          <h5 class="using-name text-center">Ro’yhatdan o’ting</h5>
+          <p class="using-desc">
+            Web saytdan telefon nomer orqali ro'yxatdan o'tiladi.
+          </p>
+        </v-col>
+
+        <v-col cols="6" sm="4" md="3" lg="2">
+          <div class="using-icon-wrapper">
+            <img
+              class="using-icon mx-auto"
+              src="../assets/profile.png"
+              alt="profile image"
+            />
+          </div>
+          <h5 class="using-name text-center">Shaxsiy kabinet ochiladi</h5>
+          <p class="using-desc">
+            Xavfsizlik kodi kiritiladi va kerakli malumotlar to'ldiriladi va
+            shaxsiy kabinet ochiladi.
+          </p>
+        </v-col>
+
+        <v-col cols="6" sm="4" md="3" lg="2">
+          <div class="using-icon-wrapper">
+            <img
+              class="using-icon mx-auto"
+              src="../assets/basket.png"
+              alt="User image"
+            />
+          </div>
+          <h5 class="using-name text-center">Mahsulot tanlanadi</h5>
+          <p class="using-desc">
+            Web sayt orqali buyurtma qilinadi kerakli maxsulotlar tanlanib soni
+            kiritilib savatchaga yuklanadi.
+          </p>
+        </v-col>
+
+        <v-col cols="6" sm="4" md="3" lg="2">
+          <div class="using-icon-wrapper">
+            <img
+              class="using-icon mx-auto"
+              src="../assets/check.png"
+              alt="User image"
+            />
+          </div>
+          <h5 class="using-name text-center">Buyurtma beriladi</h5>
+          <p class="using-desc">
+            Tanlangan savatchadagi barcha maxsulotlar buyurtma berish uchun
+            "Buyurtma berish" tugmasi bosiladi.
+          </p>
+        </v-col>
+
+        <v-col cols="6" sm="4" md="3" lg="2">
+          <div class="using-icon-wrapper">
+            <img
+              class="using-icon mx-auto"
+              src="../assets/call.png"
+              alt="User image"
+            />
+          </div>
+          <h5 class="using-name text-center">Maxsus hodim bog’lanadi</h5>
+          <p class="using-desc">
+            Maxsus xodim siz bilan bog'lanib boshqa kerakli malumotlarni beradi.
+          </p>
+        </v-col>
+
+        <v-col cols="6" sm="4" md="3" lg="2">
+          <div class="using-icon-wrapper">
+            <img
+              class="using-icon mx-auto"
+              src="../assets/pay.png"
+              alt="User image"
+            />
+          </div>
+          <h5 class="using-name text-center">To’lov amalga oshiriladi</h5>
+          <p class="using-desc">
+            To'lovni Click, Payme, Pul o'tkazmasi yoki Naqt pul orqali
+            to'lashingiz mumkin.
+          </p>
+        </v-col>
+      </v-row>
+    </v-container>
+
     <!-- friends  -->
     <v-container class="our-friends mb-15">
       <v-row class="friends-row">
@@ -188,9 +287,11 @@
         <v-col class="faq-question" cols="8">
           <v-expansion-panels v-if="posts">
             <v-expansion-panel v-for="(item, i) in posts" :key="i" class="mb-3">
-              <v-expansion-panel-header> {{item.question}} </v-expansion-panel-header>
+              <v-expansion-panel-header>
+                {{ item.question }}
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
-                {{item.answer}}
+                {{ item.answer }}
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -220,7 +321,7 @@ import HomeHero from "@/components/HomeHero.vue";
 import SectionTitle from "@/components/SectionTitle.vue";
 import EventServices from "@/services/EventServices";
 import axios from "axios";
-import {mask} from 'vue-the-mask'
+import { mask } from "vue-the-mask";
 export default {
   components: {
     HomeHero,
@@ -242,7 +343,7 @@ export default {
       question: "",
       popularPro: null,
       dialog: false,
-      posts: null
+      posts: null,
     };
   },
   computed: {
@@ -266,10 +367,11 @@ export default {
         phone_number,
         message,
       };
-      axios.post('http://89.223.122.69:8004/api/posts/question/', data)
+      axios
+        .post("http://89.223.122.69:8004/api/posts/question/", data)
         .then(() => {
           this.dialogTwo = true;
-        })
+        });
     },
     openDialog() {
       console.log(1);
@@ -278,15 +380,15 @@ export default {
       }
     },
   },
-  directives: {mask},
+  directives: { mask },
   mounted() {
     EventServices.getPopularPro().then((res) => {
       this.popularPro = res.data;
     });
     localStorage.removeItem("tip");
-    axios.get("http://89.223.122.69:8004/api/posts/faq/").then(res => {
-      this.posts = res.data
-    })
+    axios.get("http://89.223.122.69:8004/api/posts/faq/").then((res) => {
+      this.posts = res.data;
+    });
   },
 };
 </script>
@@ -444,6 +546,38 @@ export default {
   width: 250px;
   height: auto;
   object-fit: contain;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              working with our                              */
+/* -------------------------------------------------------------------------- */
+.heading {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-size: 26px;
+}
+.using-icon-wrapper {
+  width: 100%;
+  height: 88px;
+  margin-bottom: 24px;
+  text-align: center;
+  img {
+    object-fit: contain;
+  }
+}
+.using-name {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  color: #000000;
+  margin-bottom: 22px;
+}
+.using-desc {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15px;
+  color: #000000;
+  text-align: center;
 }
 /* -------------------------------------------------------------------------- */
 /*                                   request                                  */
